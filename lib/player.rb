@@ -33,6 +33,7 @@ class Player
     glMatrixMode(GL_MODELVIEW) # The modelview matrix is where object information is stored.
     glLoadIdentity
     glEnable(GL_DEPTH_TEST)
+    glShadeModel(GL_FLAT)
 
     @window.handle_gl_error
   end

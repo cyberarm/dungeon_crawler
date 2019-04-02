@@ -33,7 +33,7 @@ class Level
 
   def process_map
     @map.height.times do |y|
-      @map.height.times do |x|
+      @map.width.times do |x|
         tile = @map.tiles[x][y]
 
         build_quad(tile, x, y)
@@ -44,7 +44,7 @@ class Level
   def build_quad(tile, x, y)
     case tile[:type]
     when :floor
-      build_face(:floor, tile, x, y)
+      build_face(:up, tile, x, y)
     when :wall
       neighbors = @map.neighbors(x, y)
 
@@ -55,7 +55,7 @@ class Level
         next unless _tile
         next if _tile[:type] == :floor
 
-        # build_face(side, _tile, hash[:x], hash[:y])
+        build_face(side, _tile, x, y)
       end
     end
   end
@@ -63,9 +63,10 @@ class Level
   def build_face(type, tile, x, y)
     vertices, normals, colors = [], [], []
     norm = normal(:up)
+    colour = color(tile[:color])
 
     case type
-    when :floor
+    when :up
       vertices << Vector.new(x,              0, y) # TOP LEFT
       vertices << Vector.new(x + @tile_size, 0, y) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0, y + @tile_size) # BOTTOM RIGHT
@@ -77,13 +78,15 @@ class Level
       vertices << Vector.new(x - @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x - @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x - @tile_size, 0,          y)              # BOTTOM LEFT
+      colour = color(0, :left)
 
     when :right
       norm = normal(:right)
       vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP LEFT
-      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
-      vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x + @tile_size, @tile_size, y - @tile_size) # TOP RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y - @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM LEFT
+      colour = color(0, :right)
 
     when :front
       norm = normal(:front)
@@ -91,6 +94,7 @@ class Level
       vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x,              0,          y + @tile_size) # BOTTOM LEFT
+      colour = color(0, :front)
 
     when :back # done
       norm = normal(:back)
@@ -98,6 +102,7 @@ class Level
       vertices << Vector.new(x + @tile_size, @tile_size, y - @tile_size) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y - @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x,              0,          y - @tile_size) # BOTTOM LEFT
+      colour = color(0, :back)
     end
 
     normals << norm
@@ -105,10 +110,10 @@ class Level
     normals << norm
     normals << norm
 
-    colors << color(tile[:color])
-    colors << color(tile[:color])
-    colors << color(tile[:color])
-    colors << color(tile[:color])
+    colors << colour
+    colors << colour
+    colors << colour
+    colors << colour
 
     @quads << Quad.new(vertices, normals, colors)
   end
@@ -130,12 +135,29 @@ class Level
     end
   end
 
-  def color(gosu_color)
-    Vector.new(
-      gosu_color.red / 255.0,
-      gosu_color.green / 255.0,
-      gosu_color.blue / 255.0
-    )
+  def color(gosu_color, direction = nil)
+    unless direction
+      Vector.new(
+        gosu_color.red / 255.0,
+        gosu_color.green / 255.0,
+        gosu_color.blue / 255.0
+      )
+    else
+      case direction
+      when :up
+        Vector.new(0, 1.0, 0)
+      when :down
+        Vector.new(0, 1.0, 0)
+      when :left
+        Vector.new(1.0, 0.0, 0)
+      when :right
+        Vector.new(1.0, 0.0, 0)
+      when :front
+        Vector.new(0.0, 0.0, 1.0)
+      when :back
+        Vector.new(0.0, 0.0, 1.0)
+      end
+    end
   end
 
   def draw
