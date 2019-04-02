@@ -34,6 +34,11 @@ class MapPlayer < State
 
     Gosu.translate(@window.width - (@map.width * @map.size) * 0.3, 0) do
       Gosu.scale(0.3, 0.3) do
+        Gosu.draw_rect(
+          -2, -2,
+          @map.width * @map.size + 4, @map.height * @map.size + 8,
+          Gosu::Color::BLACK
+        )
         @map.draw
         Gosu.draw_rect(
           @player.position.x * @map.size-1, @player.position.z * @map.size-1,

@@ -53,9 +53,9 @@ class Level
 
         next unless side
         next unless _tile
-        next if _tile[:type] == :floor
+        next unless _tile[:type] == :floor
 
-        # build_face(side, _tile, x, y)
+        build_face(side, tile, x, y)
       end
     end
   end
@@ -74,35 +74,35 @@ class Level
 
     when :left
       norm = normal(:left)
-      vertices << Vector.new(x - @tile_size, @tile_size, y)              # TOP LEFT
-      vertices << Vector.new(x - @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
-      vertices << Vector.new(x - @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
-      vertices << Vector.new(x - @tile_size, 0,          y)              # BOTTOM LEFT
-      colour = color(0, :left)
+      vertices << Vector.new(x, @tile_size, y)              # TOP LEFT
+      vertices << Vector.new(x, @tile_size, y + @tile_size) # TOP RIGHT
+      vertices << Vector.new(x, 0,          y + @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x, 0,          y)              # BOTTOM LEFT
+      # colour = color(0, :left)
 
     when :right
       norm = normal(:right)
       vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP LEFT
-      vertices << Vector.new(x + @tile_size, @tile_size, y - @tile_size) # TOP RIGHT
-      vertices << Vector.new(x + @tile_size, 0,          y - @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM LEFT
-      colour = color(0, :right)
+      # colour = color(0, :right)
 
     when :front
       norm = normal(:front)
+      vertices << Vector.new(x,              @tile_size, y) # TOP LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y) # TOP RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y) # BOTTOM RIGHT
+      vertices << Vector.new(x,              0,          y) # BOTTOM LEFT
+      # colour = color(0, :front)
+
+    when :back # done
+      norm = normal(:back)
       vertices << Vector.new(x,              @tile_size, y + @tile_size) # TOP LEFT
       vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x,              0,          y + @tile_size) # BOTTOM LEFT
-      colour = color(0, :front)
-
-    when :back # done
-      norm = normal(:back)
-      vertices << Vector.new(x,              @tile_size, y - @tile_size) # TOP LEFT
-      vertices << Vector.new(x + @tile_size, @tile_size, y - @tile_size) # TOP RIGHT
-      vertices << Vector.new(x + @tile_size, 0,          y - @tile_size) # BOTTOM RIGHT
-      vertices << Vector.new(x,              0,          y - @tile_size) # BOTTOM LEFT
-      colour = color(0, :back)
+      # colour = color(0, :back)
     end
 
     normals << norm
