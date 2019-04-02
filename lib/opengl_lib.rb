@@ -29,3 +29,5 @@ when :OPENGL_PLATFORM_LINUX
 else
   raise RuntimeError, "Unsupported platform."
 end
+
+GLColor = Struct.new(:red, :green, :blue, :alpha)

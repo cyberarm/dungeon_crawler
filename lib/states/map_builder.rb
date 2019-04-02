@@ -16,10 +16,15 @@ class MapBuilder < State
   end
 
   def draw
-    @map.draw(@font)
+    @map.draw
+    Gosu.draw_rect(@map.position[0] * @map.size, @map.position[1] * @map.size, @map.size, @map.size, Gosu::Color::GREEN)
 
     @font.draw_text("Mouse: #{normalize(@window.mouse_x)}:#{normalize(@window.mouse_y)}", 10, 10, 0)
     @font.draw_text("Map Size: #{@_width}:#{@_height}", 10, 28, 0)
+
+    @font.draw_text("Tunnels: #{@map.max_tunnels-@map.tunnels}/#{@map.max_tunnels}, Max Tunnel Length: #{@map.max_length}", 10, 75, 0)
+    @font.draw_text("Walker: Position: #{@map.position}, Direction: #{@map.current_direction}, Distance Left: #{@map.current_walk_distance}", 10, 75+20, 0)
+
   end
 
   def update

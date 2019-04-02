@@ -55,7 +55,7 @@ class Level
         next unless _tile
         next if _tile[:type] == :floor
 
-        build_face(side, _tile, hash[:x], hash[:y])
+        # build_face(side, _tile, hash[:x], hash[:y])
       end
     end
   end

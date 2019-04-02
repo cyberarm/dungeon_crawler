@@ -1,7 +1,9 @@
 class Map
   Tile = Struct.new(:type, :color)
 
-  attr_reader :tiles, :width, :height, :position
+  attr_reader :tiles, :width, :height, :position,
+              :tunnels, :max_length, :size, :max_tunnels, :current_direction,
+              :current_walk_distance
   def initialize(width:, height:, tunnels:, max_length:, size: 16)
     @width, @height = width, height
     @tunnels, @max_length = tunnels, max_length
@@ -39,17 +41,12 @@ class Map
     end
   end
 
-  def draw(font)
+  def draw
     @height.times do |y|
       @width.times do |x|
         Gosu.draw_rect(x * @size, y * @size, @size, @size, @tiles[x][y].color)
       end
     end
-
-    Gosu.draw_rect(@position[0] * @size, @position[1] * @size, @size, @size, Gosu::Color::GREEN)
-
-    font.draw_text("Tunnels: #{@max_tunnels-@tunnels}/#{@max_tunnels}, Max Tunnel Length: #{@max_length}", 10, 75, 0)
-    font.draw_text("Walker: Position: #{@position}, Direction: #{@current_direction}, Distance Left: #{@current_walk_distance}", 10, 75+20, 0)
   end
 
   def update

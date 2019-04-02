@@ -13,9 +13,15 @@ class Player
 
     @field_of_view = 45.0
     @view_distance = 50.0
+
+    @sky = Gosu::Color::BLACK
+    @gl_sky = GLColor.new(@sky.red / 255.0, @sky.green / 255.0, @sky.blue / 255.0, @sky.alpha / 255.0)
   end
 
   def camera
+    glClearColor(@gl_sky.red, @gl_sky.green, @gl_sky.blue, @gl_sky.alpha)
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) # clear the screen and the depth buffer
+
     #glMatrixMode(matrix) indicates that following [matrix] is going to get used
     glMatrixMode(GL_PROJECTION) # The projection matrix is responsible for adding perspective to our scene.
     glLoadIdentity # Resets current modelview matrix
@@ -26,6 +32,7 @@ class Player
     glTranslatef(-@position.x, -0.5, -@position.z)
     glMatrixMode(GL_MODELVIEW) # The modelview matrix is where object information is stored.
     glLoadIdentity
+    glEnable(GL_DEPTH_TEST)
 
     @window.handle_gl_error
   end
