@@ -7,7 +7,7 @@ class MapBuilder < State
     @map_tunnel_max_length = rand(1..12)
 
     @map = Map.new(width: @map_width, height: @map_height, tunnels: @map_tunnels, max_length: @map_tunnel_max_length, size: @tile_size.floor)
-    unless ARGV.first.end_with?(".txt")
+    unless ARGV.first && ARGV.first.end_with?(".txt")
       @map.build
     else
       load_map(File.expand_path("./../")+"/"+ARGV.first)

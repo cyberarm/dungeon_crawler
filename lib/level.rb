@@ -1,32 +1,12 @@
 class Level
   include OpenGL
 
-  class Quad
-    include OpenGL
-    def initialize(vertices, normals, colors)
-      @vertices = vertices
-      @normals  = normals
-      @colors   = colors
-    end
-
-    def draw
-      @vertices.each_with_index do |vertex, i|
-        normal = @normals[i]
-        color  = @colors[i]
-
-        glVertex3f(vertex.x, vertex.y, vertex.z)
-        glNormal3f(normal.x, normal.y, normal.z)
-        glColor3f(color.x, color.y, color.z)
-      end
-    end
-  end
-
   def initialize(options = {})
     @options = options
     @map = options[:map]
     @tile_size = 1.0
 
-    @quads = []
+    @faces = []
 
     process_map
   end
@@ -115,7 +95,7 @@ class Level
     colors << colour
     colors << colour
 
-    @quads << Quad.new(vertices, normals, colors)
+    @faces << Face.new(vertices, normals, colors)
   end
 
   def normal(direction)
@@ -162,9 +142,30 @@ class Level
 
   def draw
     glBegin(GL_QUADS)
-      @quads.each do |quad|
-        quad.draw
+      @faces.each do |face|
+        face.draw
       end
     glEnd
+  end
+
+
+  class Face
+    include OpenGL
+    def initialize(vertices, normals, colors)
+      @vertices = vertices
+      @normals  = normals
+      @colors   = colors
+    end
+
+    def draw
+      @vertices.each_with_index do |vertex, i|
+        normal = @normals[i]
+        color  = @colors[i]
+
+        glVertex3f(vertex.x, vertex.y, vertex.z)
+        glNormal3f(normal.x, normal.y, normal.z)
+        glColor3f(color.x, color.y, color.z)
+      end
+    end
   end
 end
