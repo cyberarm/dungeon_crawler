@@ -8,8 +8,8 @@ class Player
     @window = options[:window]
 
     @position = Vector.new(options[:x], 0, options[:y])
-    @turn_speed = 25.0
-    @speed = 1.0
+    @turn_speed = 50.0
+    @speed = 4.0
 
     @field_of_view = 45.0
     @view_distance = 50.0
@@ -23,7 +23,7 @@ class Player
     gluPerspective(@field_of_view, @window.width / @window.height, 0.1, @view_distance)
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
     glRotatef(@position.y, 0, 1, 0)
-    glTranslatef(-@position.x, -1.0, -@position.z)
+    glTranslatef(-@position.x, -0.5, -@position.z)
     glMatrixMode(GL_MODELVIEW) # The modelview matrix is where object information is stored.
     glLoadIdentity
 
@@ -48,11 +48,23 @@ class Player
     @position.x -= Math.sin((@position.y).degrees_to_radians) * speed
   end
 
+  def strafe_left
+    @position.z += Math.cos((@position.y + 90).degrees_to_radians) * speed
+    @position.x += Math.sin((@position.y + 90).degrees_to_radians) * speed
+  end
+
+  def strafe_right
+    @position.z -= Math.cos((@position.y + 90).degrees_to_radians) * speed
+    @position.x -= Math.sin((@position.y + 90).degrees_to_radians) * speed
+  end
+
   def turn_left
     @position.y -= turn_speed
+    @position.y %= 359.0
   end
 
   def turn_right
     @position.y += turn_speed
+    @position.y %= 359.0
   end
 end

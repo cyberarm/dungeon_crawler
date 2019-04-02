@@ -3,21 +3,33 @@ class MapPlayer < State
     @keymap = {
       Gosu::KbW => :forward,
       Gosu::KbS => :backward,
-      Gosu::KbA => :turn_left,
-      Gosu::KbD => :turn_right,
+      Gosu::KbA => :strafe_left,
+      Gosu::KbD => :strafe_right,
+
+      Gosu::KbUp => :forward,
+      Gosu::KbDown => :backward,
+      Gosu::KbLeft => :turn_left,
+      Gosu::KbRight => :turn_right,
     }
 
     @keys   = {}
 
-    @player = Player.new(window: @options[:window], x: @options[:map].position.first, y: @options[:map].position.last)
+    @window = @options[:window]
+    @player = Player.new(window: @window, x: @options[:map].position.first, y: @options[:map].position.last)
     @level  = Level.new(map: @options[:map])
+
+    @font = Gosu::Font.new(28)
   end
 
   def draw
-    @player.camera
-    @level.draw
+    @window.gl do
+      @player.camera
+      @level.draw
 
-    @window.handle_gl_error
+      @window.handle_gl_error
+    end
+
+    @font.draw_text("FPS: #{Gosu.fps}\nPlayer X: #{@player.position.x.round(1)}, Y: #{@player.position.y.round(1)}, Z: #{@player.position.z.round(1)}", 10, 10, 10)
   end
 
   def update

@@ -91,6 +91,16 @@ class Map
     end
   end
 
+  def neighbors(x, y)
+    list = {}
+    list[:left] = @tiles.dig(x - 1, y) # LEFT
+    list[:right] = @tiles.dig(x + 1, y) # RIGHT
+    list[:front] = @tiles.dig(x, y - 1) # FRONT
+    list[:back] = @tiles.dig(x, y + 1) # BACK
+
+    return list
+  end
+
   def wall_color(base_color = Gosu::Color.rgb(50, 50, 50), drift = 3)
     tweak_color(base_color, drift)
   end
