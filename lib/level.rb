@@ -48,10 +48,14 @@ class Level
     when :wall
       neighbors = @map.neighbors(x, y)
 
-      neighbors.each do |side, tile|
-        next unless tile
+      neighbors.each do |side, hash|
+        _tile = hash[:tile]
 
-        build_face(side, tile, x, y)
+        next unless side
+        next unless _tile
+        next if _tile[:type] == :floor
+
+        build_face(side, _tile, hash[:x], hash[:y])
       end
     end
   end
@@ -69,16 +73,31 @@ class Level
 
     when :left
       norm = normal(:left)
+      vertices << Vector.new(x - @tile_size, @tile_size, y)              # TOP LEFT
+      vertices << Vector.new(x - @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
+      vertices << Vector.new(x - @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x - @tile_size, 0,          y)              # BOTTOM LEFT
 
     when :right
       norm = normal(:right)
+      vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM LEFT
 
     when :front
       norm = normal(:front)
+      vertices << Vector.new(x,              @tile_size, y + @tile_size) # TOP LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x,              0,          y + @tile_size) # BOTTOM LEFT
 
-    when :back
+    when :back # done
       norm = normal(:back)
-
+      vertices << Vector.new(x,              @tile_size, y - @tile_size) # TOP LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y - @tile_size) # TOP RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y - @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x,              0,          y - @tile_size) # BOTTOM LEFT
     end
 
     normals << norm

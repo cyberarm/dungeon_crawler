@@ -93,10 +93,10 @@ class Map
 
   def neighbors(x, y)
     list = {}
-    list[:left] = @tiles.dig(x - 1, y) # LEFT
-    list[:right] = @tiles.dig(x + 1, y) # RIGHT
-    list[:front] = @tiles.dig(x, y - 1) # FRONT
-    list[:back] = @tiles.dig(x, y + 1) # BACK
+    list[:left]  = { tile: @tiles.dig(x - 1, y), x: x - 1, y: y } # LEFT
+    list[:right] = { tile: @tiles.dig(x + 1, y), x: x + 1, y: y } # RIGHT
+    list[:front] = { tile: @tiles.dig(x, y - 1), x: x,     y: y - 1 } # FRONT
+    list[:back]  = { tile: @tiles.dig(x, y + 1), x: x,     y: y + 1 } # BACK
 
     return list
   end
