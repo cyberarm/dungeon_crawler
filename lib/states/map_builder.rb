@@ -30,7 +30,7 @@ class MapBuilder < State
     if id == Gosu::KbF5
       @map = Map.new(width: @_width, height: @_height, tunnels: @_tunnels, max_length: @_max_length, size: @size.floor)
     elsif id == Gosu::KbReturn || Gosu::KbEnter
-      @window.state = MapPlayer.new(map: @map)
+      @window.state = MapPlayer.new(map: @map, window: @window)
     end
   end
 

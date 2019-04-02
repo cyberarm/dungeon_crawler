@@ -1,6 +1,7 @@
 class Map
   Tile = Struct.new(:type, :color)
-  attr_reader :tiles, :width, :height
+
+  attr_reader :tiles, :width, :height, :position
   def initialize(width:, height:, tunnels:, max_length:, size: 16)
     @width, @height = width, height
     @tunnels, @max_length = tunnels, max_length

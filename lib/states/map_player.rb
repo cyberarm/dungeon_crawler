@@ -9,10 +9,15 @@ class MapPlayer < State
 
     @keys   = {}
 
-    @player = Player.new
+    @player = Player.new(window: @options[:window], x: @options[:map].position.first, y: @options[:map].position.last)
+    @level  = Level.new(map: @options[:map])
   end
 
   def draw
+    @player.camera
+    @level.draw
+
+    @window.handle_gl_error
   end
 
   def update
@@ -28,7 +33,7 @@ class MapPlayer < State
     @keys[id] = true
   end
 
-  def button_id(id)
+  def button_up(id)
     @keys.delete(id)
   end
 end

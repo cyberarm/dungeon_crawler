@@ -1,6 +1,7 @@
 require "gosu"
 require "opengl"
 require "glu"
+
 require_relative "lib/opengl_lib"
 require_relative "lib/vector"
 require_relative "lib/state"
@@ -8,12 +9,21 @@ require_relative "lib/map"
 require_relative "lib/states/map_builder"
 require_relative "lib/states/map_player"
 require_relative "lib/player"
+require_relative "lib/level"
 
 class Window < Gosu::Window
+  include OpenGL
+  include GLU
+
   def initialize
     super(1280, 600, false)
 
     @current_state = MapBuilder.new(window: self)
+    @delta_time = Gosu.milliseconds
+  end
+
+  def delta
+    (Gosu.milliseconds - @delta_time) / 1000.0
   end
 
   def draw
@@ -22,6 +32,7 @@ class Window < Gosu::Window
 
   def update
     @current_state.update
+    @delta_time = Gosu.milliseconds
   end
 
   def state=(state)
@@ -40,6 +51,14 @@ class Window < Gosu::Window
   def button_up(id)
     super
     @current_state.button_up(id)
+  end
+
+  def handle_gl_error
+    e = glGetError()
+    if e != GL_NO_ERROR
+      $stderr.puts "OpenGL error in: #{gluErrorString(e)} (#{e})\n"
+      exit
+    end
   end
 end
 
