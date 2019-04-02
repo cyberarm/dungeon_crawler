@@ -1,69 +1,45 @@
 require "gosu"
+require "opengl"
+require "glu"
+require_relative "lib/opengl_lib"
+require_relative "lib/vector"
+require_relative "lib/state"
 require_relative "lib/map"
+require_relative "lib/states/map_builder"
+require_relative "lib/states/map_player"
+require_relative "lib/player"
 
 class Window < Gosu::Window
   def initialize
     super(1280, 600, false)
 
-    @size = 16.0
-    @_width  = (self.width  / @size).floor
-    @_height = (self.height / @size).floor
-    @_tunnels= 512
-    @_max_length = 4
-
-    @map = Map.new(width: @_width, height: @_height, tunnels: @_tunnels, max_length: @_max_length, size: @size.floor)
-
-    @font = Gosu::Font.new(18)
-  end
-
-  def needs_cursor?
-    true
+    @current_state = MapBuilder.new(window: self)
   end
 
   def draw
-    @map.draw(@font)
-
-    @font.draw_text("Mouse: #{normalize(mouse_x)}:#{normalize(mouse_y)}", 10, 10, 0)
-    @font.draw_text("Map Size: #{@_width}:#{@_height}", 10, 28, 0)
+    @current_state.draw
   end
 
   def update
-    @map.update
+    @current_state.update
   end
 
-  def button_up(id)
-    if id == Gosu::KbF5
-      @map = Map.new(width: @_width, height: @_height, tunnels: @_tunnels, max_length: @_max_length, size: @size.floor)
-    end
+  def state=(state)
+    @current_state = state
+  end
+
+  def needs_cursor?
+    @current_state.needs_cursor?
   end
 
   def button_down(id)
-    if id == Gosu::KbS && (button_down?(Gosu::KbLeftControl) || button_down?(Gosu::KbRightControl))
-      save_map
-    end
+    super
+    @current_state.button_down(id)
   end
 
-  def save_map
-    puts "Saving..."
-    buffer = ""
-
-    @map.height.times do |y|
-      @map.width.times do |x|
-        if @map.tiles[x][y].type == :wall
-          buffer+="#"
-        else
-          buffer+="-"
-        end
-      end
-      buffer+="\n"
-    end
-
-    File.open("data/map_#{Time.now.to_i}.txt", "w") {|f| f.write(buffer) }
-    puts "Saved."
-  end
-
-  def normalize(n)
-    (n / @size).floor
+  def button_up(id)
+    super
+    @current_state.button_up(id)
   end
 end
 
