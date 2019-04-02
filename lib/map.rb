@@ -28,8 +28,6 @@ class Map
     @current_direction = @directions.sample
     @current_walk_distance = rand(1..@max_length)
     @position = [@width/2, @height/2]
-
-    build
   end
 
   def build

@@ -7,6 +7,7 @@ class MapBuilder < State
     @map_tunnel_max_length = rand(12)
 
     @map = Map.new(width: @map_width, height: @map_height, tunnels: @map_tunnels, max_length: @map_tunnel_max_length, size: @tile_size.floor)
+    @map.build
 
     @font = Gosu::Font.new(18)
   end
@@ -49,6 +50,7 @@ class MapBuilder < State
   def button_up(id)
     if id == Gosu::KbF5
       @map = Map.new(width: @map_width, height: @map_height, tunnels: @map_tunnels, max_length: @map_tunnel_max_length, size: @tile_size.floor)
+      @map.build
     elsif id == Gosu::KbReturn || id == Gosu::KbEnter
       @window.state = MapPlayer.new(map: @map, window: @window)
     end
@@ -81,18 +83,19 @@ class MapBuilder < State
 
   def load_map(file)
     mapfile = File.read(file)
-    @map.tiles.clear
+    tiles = {}
 
     y = 0
     x = 0
+    width = 0
     mapfile.each_line do |line|
       line.strip.each_char do |char|
-        @map.tiles[x] ||= {}
+        tiles[x] ||= {}
 
         if char == "#" # WALL
-          @map.tiles[x][y] = Map::Tile.new(:wall, @map.wall_color)
+          tiles[x][y] = Map::Tile.new(:wall, @map.wall_color)
         else# FLOOR '-'
-          @map.tiles[x][y] = Map::Tile.new(:wall, @map.floor_color)
+          tiles[x][y] = Map::Tile.new(:floor, @map.floor_color)
         end
 
         x +=1
@@ -100,6 +103,15 @@ class MapBuilder < State
 
       y += 1
       x = 0
+      width = line.strip.length
+    end
+
+    @map = Map.new(width: width, height: y, tunnels: 0, max_length: 0, size: 16.0)
+    tiles.each do |_x, hash|
+      hash.each do |_y, tile|
+        @map.tiles[_x] ||= {}
+        @map.tiles[_x][_y] = tile
+      end
     end
 
     puts "Loaded #{file}."
