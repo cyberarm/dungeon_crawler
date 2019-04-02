@@ -53,6 +53,10 @@ class Window < Gosu::Window
     @current_state.button_up(id)
   end
 
+  def drop(file)
+    @current_state.drop(file)
+  end
+
   def handle_gl_error
     e = glGetError()
     if e != GL_NO_ERROR

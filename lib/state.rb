@@ -20,9 +20,16 @@ class State
     @show_cursor
   end
 
+  def button_down?(id)
+    @window.button_down?(id)
+  end
+
   def button_down(id)
   end
 
   def button_up(id)
+  end
+
+  def drop(file)
   end
 end

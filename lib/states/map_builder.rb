@@ -1,12 +1,12 @@
 class MapBuilder < State
   def setup
-    @size = 16.0
-    @_width  = (@window.width  / @size).floor
-    @_height = (@window.height / @size).floor
-    @_tunnels= 512
-    @_max_length = 4
+    @tile_size = 16.0
+    @map_width  = (@window.width  / @tile_size).floor
+    @map_height = (@window.height / @tile_size).floor
+    @map_tunnels= rand(512)
+    @map_tunnel_max_length = rand(12)
 
-    @map = Map.new(width: @_width, height: @_height, tunnels: @_tunnels, max_length: @_max_length, size: @size.floor)
+    @map = Map.new(width: @map_width, height: @map_height, tunnels: @map_tunnels, max_length: @map_tunnel_max_length, size: @tile_size.floor)
 
     @font = Gosu::Font.new(18)
   end
@@ -19,28 +19,43 @@ class MapBuilder < State
     @map.draw
     Gosu.draw_rect(@map.position[0] * @map.size, @map.position[1] * @map.size, @map.size, @map.size, Gosu::Color::GREEN)
 
-    @font.draw_text("Mouse: #{normalize(@window.mouse_x)}:#{normalize(@window.mouse_y)}", 10, 10, 0)
-    @font.draw_text("Map Size: #{@_width}:#{@_height}", 10, 28, 0)
-
-    @font.draw_text("Tunnels: #{@map.max_tunnels-@map.tunnels}/#{@map.max_tunnels}, Max Tunnel Length: #{@map.max_length}", 10, 75, 0)
-    @font.draw_text("Walker: Position: #{@map.position}, Direction: #{@map.current_direction}, Distance Left: #{@map.current_walk_distance}", 10, 75+20, 0)
+    @font.draw_text("Generate #{@map_tunnels} tunnels of max length #{@map_tunnel_max_length}", 10, 10, 0)
+    @font.draw_text("Press ENTER to Play\nPress F5 to regenerate map\nPress J|K to change number of tunnels\nPress F|G to change max tunnel length", 10, 28, 0)
 
   end
 
   def update
     @map.update
+
+    if button_down?(Gosu::KbJ)
+      @map_tunnels-=1
+      @map_tunnels = 1 if @map_tunnels < 2
+    end
+    if button_down?(Gosu::KbK)
+      @map_tunnels+=1
+      @map_tunnels = 1024 if @map_tunnels > 1024
+    end
+
+    if button_down?(Gosu::KbF)
+      @map_tunnel_max_length-=1
+      @map_tunnel_max_length = 1 if @map_tunnel_max_length < 2
+    end
+    if button_down?(Gosu::KbG)
+      @map_tunnel_max_length+=1
+      @map_tunnel_max_length = 128 if @map_tunnel_max_length > 128
+    end
   end
 
   def button_up(id)
     if id == Gosu::KbF5
-      @map = Map.new(width: @_width, height: @_height, tunnels: @_tunnels, max_length: @_max_length, size: @size.floor)
-    elsif id == Gosu::KbReturn || Gosu::KbEnter
+      @map = Map.new(width: @map_width, height: @map_height, tunnels: @map_tunnels, max_length: @map_tunnel_max_length, size: @tile_size.floor)
+    elsif id == Gosu::KbReturn || id == Gosu::KbEnter
       @window.state = MapPlayer.new(map: @map, window: @window)
     end
   end
 
   def button_down(id)
-    if id == Gosu::KbS && (button_down?(Gosu::KbLeftControl) || button_down?(Gosu::KbRightControl))
+    if id == Gosu::KbS && (Gosu.button_down?(Gosu::KbLeftControl) || Gosu.button_down?(Gosu::KbRightControl))
       save_map
     end
   end
@@ -60,11 +75,41 @@ class MapBuilder < State
       buffer+="\n"
     end
 
-    File.open("data/map_#{Time.now.to_i}.txt", "w") {|f| f.write(buffer) }
+    File.open("../data/map_#{Time.now.to_i}.txt", "w") {|f| f.write(buffer) }
     puts "Saved."
   end
 
+  def load_map(file)
+    mapfile = File.read(file)
+    @map.tiles.clear
+
+    y = 0
+    x = 0
+    mapfile.each_line do |line|
+      line.strip.each_char do |char|
+        @map.tiles[x] ||= {}
+
+        if char == "#" # WALL
+          @map.tiles[x][y] = Map::Tile.new(:wall, @map.wall_color)
+        else# FLOOR '-'
+          @map.tiles[x][y] = Map::Tile.new(:wall, @map.floor_color)
+        end
+
+        x +=1
+      end
+
+      y += 1
+      x = 0
+    end
+
+    puts "Loaded #{file}."
+  end
+
+  def drop(file)
+    load_map(file)
+  end
+
   def normalize(n)
-    (n / @size).floor
+    (n / @tile_size).floor
   end
 end
