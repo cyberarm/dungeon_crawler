@@ -65,6 +65,8 @@ class MapPlayer < State
 
       @player.send(function)
     end
+
+    @player.update
   end
 
   def button_down(id)

@@ -8,6 +8,7 @@ class Player
     @window = options[:window]
 
     @position = Vector.new(options[:x], 0, options[:y])
+    @new_position = Vector.new
 
     @head_height = -0.5
     @orientation = Vector.new(0, @head_height, 0)
@@ -46,6 +47,14 @@ class Player
     @window.handle_gl_error
   end
 
+  def update
+    # Use vector math to prevent diagonal speed increase
+    @position += @new_position.normalized * speed
+
+    bob_head if Vector.new(@new_position.x, 0, @new_position.z).magnitude.abs > 0.001
+    @new_position = Vector.new
+  end
+
   def speed
     @window.delta * @speed
   end
@@ -55,31 +64,23 @@ class Player
   end
 
   def forward
-    @position.z -= Math.cos((@position.y).degrees_to_radians) * speed
-    @position.x += Math.sin((@position.y).degrees_to_radians) * speed
-
-    bob_head
+    @new_position.z -= Math.cos((@position.y).degrees_to_radians) * speed
+    @new_position.x += Math.sin((@position.y).degrees_to_radians) * speed
   end
 
   def backward
-    @position.z += Math.cos((@position.y).degrees_to_radians) * speed
-    @position.x -= Math.sin((@position.y).degrees_to_radians) * speed
-
-    bob_head
+    @new_position.z += Math.cos((@position.y).degrees_to_radians) * speed
+    @new_position.x -= Math.sin((@position.y).degrees_to_radians) * speed
   end
 
   def strafe_left
-    @position.z -= Math.sin((@position.y).degrees_to_radians) * speed
-    @position.x -= Math.cos((@position.y).degrees_to_radians) * speed
-
-    bob_head
+    @new_position.z -= Math.sin((@position.y).degrees_to_radians) * speed
+    @new_position.x -= Math.cos((@position.y).degrees_to_radians) * speed
   end
 
   def strafe_right
-    @position.z += Math.sin((@position.y).degrees_to_radians) * speed
-    @position.x += Math.cos((@position.y).degrees_to_radians) * speed
-
-    bob_head
+    @new_position.z += Math.sin((@position.y).degrees_to_radians) * speed
+    @new_position.x += Math.cos((@position.y).degrees_to_radians) * speed
   end
 
   def turn_left
