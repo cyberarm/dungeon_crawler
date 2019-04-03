@@ -41,8 +41,8 @@ class Player
     glEnable(GL_DEPTH_TEST)
     glShadeModel(GL_FLAT)
 
-    glRotatef(@position.y, 0, 1, 0)
-    glTranslatef(-@position.x, @orientation.y, -@position.z)
+    glRotatef(@orientation.y, 0, 1, 0)
+    glTranslatef(-@position.x, @position.y, -@position.z)
 
     @window.handle_gl_error
   end
@@ -64,37 +64,37 @@ class Player
   end
 
   def forward
-    @new_position.z -= Math.cos((@position.y).degrees_to_radians) * speed
-    @new_position.x += Math.sin((@position.y).degrees_to_radians) * speed
+    @new_position.z -= Math.cos((@orientation.y).degrees_to_radians) * speed
+    @new_position.x += Math.sin((@orientation.y).degrees_to_radians) * speed
   end
 
   def backward
-    @new_position.z += Math.cos((@position.y).degrees_to_radians) * speed
-    @new_position.x -= Math.sin((@position.y).degrees_to_radians) * speed
+    @new_position.z += Math.cos((@orientation.y).degrees_to_radians) * speed
+    @new_position.x -= Math.sin((@orientation.y).degrees_to_radians) * speed
   end
 
   def strafe_left
-    @new_position.z -= Math.sin((@position.y).degrees_to_radians) * speed
-    @new_position.x -= Math.cos((@position.y).degrees_to_radians) * speed
+    @new_position.z -= Math.sin((@orientation.y).degrees_to_radians) * speed
+    @new_position.x -= Math.cos((@orientation.y).degrees_to_radians) * speed
   end
 
   def strafe_right
-    @new_position.z += Math.sin((@position.y).degrees_to_radians) * speed
-    @new_position.x += Math.cos((@position.y).degrees_to_radians) * speed
+    @new_position.z += Math.sin((@orientation.y).degrees_to_radians) * speed
+    @new_position.x += Math.cos((@orientation.y).degrees_to_radians) * speed
   end
 
   def turn_left
-    @position.y -= turn_speed
-    @position.y %= 359.0
+    @orientation.y -= turn_speed
+    @orientation.y %= 359.0
   end
 
   def turn_right
-    @position.y += turn_speed
-    @position.y %= 359.0
+    @orientation.y += turn_speed
+    @orientation.y %= 359.0
   end
 
   def bob_head
     @head_bob_position += @head_bob_speed
-    @orientation.y = (Math.sin(@head_bob_position) * @head_bob_factor) + @head_height
+    @position.y = (Math.sin(@head_bob_position) * @head_bob_factor) + @head_height
   end
 end
