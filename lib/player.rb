@@ -22,8 +22,10 @@ class Player
     @speed = 1.5
 
     @field_of_view = 45.0
-    @view_distance = 50.0
-    @min_wall_distance = 0.25
+    @view_distance_near= 0.01
+    @view_distance_far = 50.0
+
+    @min_wall_distance = 0.2
 
     @mouse_pos = @window.mouse_x
     @mouse_sensitivity = 0.1
@@ -40,7 +42,7 @@ class Player
     glMatrixMode(GL_PROJECTION) # The projection matrix is responsible for adding perspective to our scene.
     glLoadIdentity # Resets current modelview matrix
     # Calculates aspect ratio of the window. Gets perspective  view. 45 is degree viewing angle, (0.1, 100) are ranges how deep can we draw into the screen
-    gluPerspective(@field_of_view, @window.width / @window.height, 0.1, @view_distance)
+    gluPerspective(@field_of_view, @window.width / @window.height, @view_distance_near, @view_distance_far)
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
     glMatrixMode(GL_MODELVIEW) # The modelview matrix is where object information is stored.
     glLoadIdentity
