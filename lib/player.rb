@@ -52,7 +52,7 @@ class Player
     # Use vector math to prevent diagonal speed increase
     @position += @new_position.normalized * speed
 
-    bob_head if Vector.new(@new_position.x, 0, @new_position.z).magnitude.abs > 0.001
+    bob_head if @new_position.magnitude.abs > 0.001
     @new_position = Vector.new
   end
 
