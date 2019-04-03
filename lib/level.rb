@@ -13,8 +13,6 @@ class Level
     @faces = []
     @textures = [nil, @floor, @wall]
 
-    p @floor_texture_id
-
     process_map
   end
 
@@ -75,24 +73,24 @@ class Level
 
     when :right
       norm = normal(:right)
-      vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP LEFT
-      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
-      vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM LEFT
 
-      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
-      vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
-      vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM LEFT
       # colour = color(0, :right)
 
     when :front
       norm = normal(:front)
-      vertices << Vector.new(x,              @tile_size, y) # TOP LEFT
-      vertices << Vector.new(x + @tile_size, @tile_size, y) # TOP RIGHT
-      vertices << Vector.new(x,              0,          y) # BOTTOM LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y) # TOP LEFT
+      vertices << Vector.new(x,              @tile_size, y) # TOP RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y) # BOTTOM LEFT
 
-      vertices << Vector.new(x + @tile_size, @tile_size, y) # TOP RIGHT
-      vertices << Vector.new(x + @tile_size, 0,          y) # BOTTOM RIGHT
-      vertices << Vector.new(x,              0,          y) # BOTTOM LEFT
+      vertices << Vector.new(x,              @tile_size, y) # TOP RIGHT
+      vertices << Vector.new(x,              0,          y) # BOTTOM RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y) # BOTTOM LEFT
       # colour = color(0, :front)
 
     when :back # done
@@ -126,13 +124,13 @@ class Level
 
   def texture_coordinates
     [
-      Vector.new(1, 0), # TOP LEFT
-      Vector.new(1, 1), # TOP RIGHT
-      Vector.new(0, 0), # BOTTOM LEFT
+      Vector.new(0, 0), # TOP LEFT
+      Vector.new(1, 0), # TOP RIGHT
+      Vector.new(0, 1), # BOTTOM LEFT
 
-      Vector.new(1, 1), # TOP RIGHT
-      Vector.new(0, 1), # BOTTOM RIGHT
-      Vector.new(0, 0)  # BOTTOM LEFT
+      Vector.new(1, 0), # TOP RIGHT
+      Vector.new(1, 1), # BOTTOM RIGHT
+      Vector.new(0, 1)  # BOTTOM LEFT
     ]
   end
 
@@ -232,15 +230,15 @@ class Level
         normal = @normals[i]
         color  = @colors[i]
 
-        glVertex3f(vertex.x, vertex.y, vertex.z)
-        glNormal3f(normal.x, normal.y, normal.z)
-        glColor3f(color.x, color.y, color.z)
-
         if @texture
           uv  = @uvs[i]
 
           glTexCoord2f(uv.x, uv.y)
         end
+        glNormal3f(normal.x, normal.y, normal.z)
+        glColor3f(color.x, color.y, color.z)
+
+        glVertex3f(vertex.x, vertex.y, vertex.z)
       end
     end
   end
