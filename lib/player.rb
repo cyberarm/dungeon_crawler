@@ -6,11 +6,12 @@ class Player
   def initialize(options = {})
     @options = options
     @window = options[:window]
+    @map    = options[:map]
 
     @head_height = -0.5
     @head_bob_position = 0
     @head_bob_speed    = 0.2
-    @head_bob_factor   = 0.02
+    @head_bob_factor   = 0.015
 
     @position = Vector.new(options[:x], @head_height, options[:y])
     @new_position = Vector.new
@@ -18,7 +19,7 @@ class Player
     @orientation = Vector.new(0, 0, 0)
 
     @turn_speed = 50.0
-    @speed = 4.0
+    @speed = 1.5
 
     @field_of_view = 45.0
     @view_distance = 50.0
@@ -50,9 +51,10 @@ class Player
 
   def update
     # Use vector math to prevent diagonal speed increase
-    @position += @new_position.normalized * speed
+    normalized = @new_position.normalized
+    moved = move(normalized)
 
-    bob_head if @new_position.magnitude.abs > 0.001
+    bob_head if moved && @new_position.magnitude.abs > 0.001
     @new_position = Vector.new
   end
 
@@ -92,6 +94,27 @@ class Player
   def turn_right
     @orientation.y += turn_speed
     @orientation.y %= 359.0
+  end
+
+  def move(normalized)
+    moved = true
+    x_tile = @map.tiles.dig((@position.x + normalized.x * speed).to_i, @position.z.to_i)
+    z_tile = @map.tiles.dig(@position.x.to_i, (@position.z + normalized.z * speed).to_i)
+
+    nx = Vector.new(normalized.x)
+    nz = Vector.new(0, 0, normalized.z)
+
+    if x_tile[:type] == :floor && z_tile[:type] == :floor
+      @position += (nx + nz) * speed
+    elsif x_tile[:type] == :floor
+      @position += nx * speed
+    elsif z_tile[:type] == :floor
+      @position += nz * speed
+    else
+      moved = false
+    end
+
+    return moved
   end
 
   def bob_head
