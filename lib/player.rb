@@ -7,14 +7,15 @@ class Player
     @options = options
     @window = options[:window]
 
-    @position = Vector.new(options[:x], 0, options[:y])
-    @new_position = Vector.new
-
     @head_height = -0.5
-    @orientation = Vector.new(0, @head_height, 0)
     @head_bob_position = 0
     @head_bob_speed    = 0.2
     @head_bob_factor   = 0.02
+
+    @position = Vector.new(options[:x], @head_height, options[:y])
+    @new_position = Vector.new
+
+    @orientation = Vector.new(0, 0, 0)
 
     @turn_speed = 50.0
     @speed = 4.0
