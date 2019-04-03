@@ -9,7 +9,11 @@ require_relative "lib/map"
 require_relative "lib/states/map_builder"
 require_relative "lib/states/map_player"
 require_relative "lib/player"
+
+require_relative "lib/texture"
 require_relative "lib/level"
+require_relative "lib/level/face"
+require_relative "lib/level/mesh"
 
 class Window < Gosu::Window
   include OpenGL
