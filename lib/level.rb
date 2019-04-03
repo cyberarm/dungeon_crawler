@@ -7,6 +7,9 @@ class Level
     @map = options[:map]
     @tile_size = 1.0
 
+    @list_id = glGenLists(1)
+    @list_filled = false
+
     @floor = Texture.new("./../assets/floor.png").id
     @wall  = Texture.new("./../assets/wall.png").id
 
@@ -194,6 +197,18 @@ class Level
   end
 
   def draw
+    unless @list_filled
+      @list_filled = true
+
+      glNewList(@list_id, GL_COMPILE)
+        render
+      glEndList
+    else
+      glCallList(@list_id)
+    end
+  end
+
+  def render
     @textures.each do |texture|
       if texture
         glEnable(GL_TEXTURE_2D)
