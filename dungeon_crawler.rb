@@ -27,6 +27,13 @@ class Window < Gosu::Window
   end
 
   def draw
+    if @screenshot
+      @screenshot = false
+      Gosu.render(self.width, self.height) do
+        @current_state.draw
+      end.save("screenshot-#{Time.now.to_i}.png")
+    end
+
     @current_state.draw
   end
 
@@ -50,6 +57,7 @@ class Window < Gosu::Window
 
   def button_up(id)
     super
+    @screenshot = true if id == Gosu::KbF12
     @current_state.button_up(id)
   end
 
