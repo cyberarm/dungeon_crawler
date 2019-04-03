@@ -59,6 +59,8 @@ class MapPlayer < State
   end
 
   def update
+    @player.orientation.x = 0 # Player Roll
+
     @keys.each do |key, value|
       function = @keymap[key]
       next unless function

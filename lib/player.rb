@@ -18,6 +18,7 @@ class Player
 
     @orientation = Vector.new(0, 0, 0)
 
+    @strafe_tilt = 0.1
     @turn_speed = 50.0
     @speed = 1.5
 
@@ -27,7 +28,7 @@ class Player
 
     @min_wall_distance = 0.2
 
-    @mouse_pos = @window.mouse_x
+    @mouse = Vector.new(@window.mouse_x, @window.mouse_y)
     @mouse_sensitivity = 0.1
 
     @sky = Gosu::Color::BLACK
@@ -49,7 +50,9 @@ class Player
     glEnable(GL_DEPTH_TEST)
     glShadeModel(GL_FLAT)
 
-    glRotatef(@orientation.y, 0, 1, 0)
+    glRotatef(@orientation.z, 1, 0, 0) # pitch
+    glRotatef(@orientation.y, 0, 1, 0) # yaw
+    glRotatef(@orientation.x, 0, 0, 1) # roll
     glTranslatef(-@position.x, @position.y, -@position.z)
 
     @window.handle_gl_error
@@ -86,11 +89,15 @@ class Player
   def strafe_left
     @new_position.z -= Math.sin((@orientation.y).degrees_to_radians) * speed
     @new_position.x -= Math.cos((@orientation.y).degrees_to_radians) * speed
+
+    @orientation.x = -@strafe_tilt
   end
 
   def strafe_right
     @new_position.z += Math.sin((@orientation.y).degrees_to_radians) * speed
     @new_position.x += Math.cos((@orientation.y).degrees_to_radians) * speed
+
+    @orientation.x = @strafe_tilt
   end
 
   def turn_left
@@ -131,14 +138,26 @@ class Player
 
   def mouse_look
     x = @window.mouse_x
-    @orientation.y -= (@mouse_pos - x) * @mouse_sensitivity
+    y = @window.mouse_y
+
+    @orientation.y -= (@mouse.x - x) * @mouse_sensitivity
     @orientation.y %= 360.0
 
     if x < 1 || x > @window.width - 1
       @window.mouse_x = @window.width/2
-      @mouse_pos = @window.width/2
+      @mouse.x = @window.width/2
     else
-      @mouse_pos = @window.mouse_x
+      @mouse.x = @window.mouse_x
+    end
+
+    @orientation.z -= (@mouse.y - y) * @mouse_sensitivity
+    @orientation.z = @orientation.z.clamp(-90.0, 90.0)
+
+    if y < 1 || y > @window.height - 1
+      @window.mouse_y = @window.height/2
+      @mouse.y = @window.height/2
+    else
+      @mouse.y = @window.mouse_y
     end
   end
 end
