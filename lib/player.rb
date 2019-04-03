@@ -134,7 +134,11 @@ class Player
     @orientation.y -= (@mouse_pos - x) * @mouse_sensitivity
     @orientation.y %= 360.0
 
-    @window.mouse_x = @window.width/2 if x < 1 || x > @window.width - 1
-    @mouse_pos = @window.mouse_x
+    if x < 1 || x > @window.width - 1
+      @window.mouse_x = @window.width/2
+      @mouse_pos = @window.width/2
+    else
+      @mouse_pos = @window.mouse_x
+    end
   end
 end
