@@ -30,7 +30,8 @@ class MapPlayer < State
       @window.handle_gl_error
     end
 
-    @font.draw_text("FPS: #{Gosu.fps}\nPlayer X: #{@player.position.x.round(1)}, Y: #{@player.position.y.round(1)}, Z: #{@player.position.z.round(1)}", 10, 10, 10)
+    @font.draw_text(
+      "FPS: #{Gosu.fps}\nPlayer X: #{@player.position.x.round(1)}, Y: #{@player.position.y.round(1)}, Z: #{@player.position.z.round(1)}\nPlayer Roll: #{@player.orientation.x.round(1)}, Yaw: #{@player.orientation.y.round(1)}, Pitch: #{@player.orientation.z.round(1)}", 10, 10, 10)
 
     Gosu.translate(@window.width - (@map.width * @map.size) * 0.3, 0) do
       Gosu.scale(0.3, 0.3) do

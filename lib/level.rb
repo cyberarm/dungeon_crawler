@@ -62,6 +62,7 @@ class Level
       vertices << Vector.new(x + @tile_size, 0, y) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0, y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x,              0, y + @tile_size) # BOTTOM LEFT
+      colour = color(0, :up)
 
     when :left
       norm = normal(:left)
@@ -72,7 +73,7 @@ class Level
       vertices << Vector.new(x, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x, 0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x, 0,          y)              # BOTTOM LEFT
-      # colour = color(0, :left)
+      colour = color(0, :left)
 
     when :right
       norm = normal(:right)
@@ -83,7 +84,7 @@ class Level
       vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM LEFT
-      # colour = color(0, :right)
+      colour = color(0, :right)
 
     when :front
       norm = normal(:front)
@@ -94,7 +95,7 @@ class Level
       vertices << Vector.new(x,              @tile_size, y) # TOP RIGHT
       vertices << Vector.new(x,              0,          y) # BOTTOM RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y) # BOTTOM LEFT
-      # colour = color(0, :front)
+      colour = color(0, :front)
 
     when :back # done
       norm = normal(:back)
@@ -105,7 +106,7 @@ class Level
       vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x,              0,          y + @tile_size) # BOTTOM LEFT
-      # colour = color(0, :back)
+      colour = color(0, :back)
     end
 
     normals << norm
@@ -181,17 +182,17 @@ class Level
     else
       case direction
       when :up
-        Vector.new(0, 1.0, 0)
+        Vector.new(1, 1, 1)
       when :down
-        Vector.new(0, 1.0, 0)
+        Vector.new(1, 1, 1)
       when :left
-        Vector.new(1.0, 0.0, 0)
+        Vector.new(1, 1, 1)
       when :right
-        Vector.new(1.0, 0.0, 0)
+        Vector.new(0.8, 0.8, 0.8)
       when :front
-        Vector.new(0.0, 0.0, 1.0)
+        Vector.new(0.4, 0.4, 0.4)
       when :back
-        Vector.new(0.0, 0.0, 1.0)
+        Vector.new(0.6, 0.6, 0.6)
       end
     end
   end
