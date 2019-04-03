@@ -46,7 +46,7 @@ class MapPlayer < State
           @map.size, @map.size,
           Gosu::Color::RED
         )
-        Gosu.rotate(@player.position.y, @player.position.x * @map.size + @map.size/2, @player.position.z * @map.size + @map.size/2) do
+        Gosu.rotate(@player.orientation.y, @player.position.x * @map.size + @map.size/2, @player.position.z * @map.size + @map.size/2) do
           Gosu.draw_line(
             @player.position.x * @map.size + @map.size/2,
             @player.position.z * @map.size, Gosu::Color::GREEN,
