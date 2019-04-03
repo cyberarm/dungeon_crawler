@@ -57,13 +57,13 @@ class Player
   end
 
   def strafe_left
-    @position.z += Math.cos((@position.y + 90).degrees_to_radians) * speed
-    @position.x += Math.sin((@position.y + 90).degrees_to_radians) * speed
+    @position.z -= Math.sin((@position.y).degrees_to_radians) * speed
+    @position.x -= Math.cos((@position.y).degrees_to_radians) * speed
   end
 
   def strafe_right
-    @position.z -= Math.cos((@position.y + 90).degrees_to_radians) * speed
-    @position.x -= Math.sin((@position.y + 90).degrees_to_radians) * speed
+    @position.z += Math.sin((@position.y).degrees_to_radians) * speed
+    @position.x += Math.cos((@position.y).degrees_to_radians) * speed
   end
 
   def turn_left

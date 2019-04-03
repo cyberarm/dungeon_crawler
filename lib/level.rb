@@ -3,10 +3,17 @@ class Level
 
   def initialize(options = {})
     @options = options
+    @window = options[:window]
     @map = options[:map]
     @tile_size = 1.0
 
+    @floor = Texture.new("./../assets/floor.png").id
+    @wall  = Texture.new("./../assets/wall.png").id
+
     @faces = []
+    @textures = [nil, @floor, @wall]
+
+    p @floor_texture_id
 
     process_map
   end
@@ -49,12 +56,18 @@ class Level
     when :up
       vertices << Vector.new(x,              0, y) # TOP LEFT
       vertices << Vector.new(x + @tile_size, 0, y) # TOP RIGHT
+      vertices << Vector.new(x,              0, y + @tile_size) # BOTTOM LEFT
+
+      vertices << Vector.new(x + @tile_size, 0, y) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0, y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x,              0, y + @tile_size) # BOTTOM LEFT
 
     when :left
       norm = normal(:left)
       vertices << Vector.new(x, @tile_size, y)              # TOP LEFT
+      vertices << Vector.new(x, @tile_size, y + @tile_size) # TOP RIGHT
+      vertices << Vector.new(x, 0,          y)              # BOTTOM LEFT
+
       vertices << Vector.new(x, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x, 0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x, 0,          y)              # BOTTOM LEFT
@@ -64,6 +77,9 @@ class Level
       norm = normal(:right)
       vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP LEFT
       vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM LEFT
+
+      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM LEFT
       # colour = color(0, :right)
@@ -72,6 +88,9 @@ class Level
       norm = normal(:front)
       vertices << Vector.new(x,              @tile_size, y) # TOP LEFT
       vertices << Vector.new(x + @tile_size, @tile_size, y) # TOP RIGHT
+      vertices << Vector.new(x,              0,          y) # BOTTOM LEFT
+
+      vertices << Vector.new(x + @tile_size, @tile_size, y) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y) # BOTTOM RIGHT
       vertices << Vector.new(x,              0,          y) # BOTTOM LEFT
       # colour = color(0, :front)
@@ -79,6 +98,9 @@ class Level
     when :back # done
       norm = normal(:back)
       vertices << Vector.new(x,              @tile_size, y + @tile_size) # TOP LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
+      vertices << Vector.new(x,              0,          y + @tile_size) # BOTTOM LEFT
+
       vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x,              0,          y + @tile_size) # BOTTOM LEFT
@@ -89,13 +111,29 @@ class Level
     normals << norm
     normals << norm
     normals << norm
+    normals << norm
+    normals << norm
 
     colors << colour
     colors << colour
     colors << colour
     colors << colour
+    colors << colour
+    colors << colour
 
-    @faces << Face.new(vertices, normals, colors)
+    @faces << Face.new(vertices, normals, colors, texture_coordinates, texture(type))
+  end
+
+  def texture_coordinates
+    [
+      Vector.new(1, 0), # TOP LEFT
+      Vector.new(1, 1), # TOP RIGHT
+      Vector.new(0, 0), # BOTTOM LEFT
+
+      Vector.new(1, 1), # TOP RIGHT
+      Vector.new(0, 1), # BOTTOM RIGHT
+      Vector.new(0, 0)  # BOTTOM LEFT
+    ]
   end
 
   def normal(direction)
@@ -112,6 +150,23 @@ class Level
       Vector.new(0.0, 0.0, 1.0)
     when :back
       Vector.new(0.0, 0.0, -1.0)
+    end
+  end
+
+  def texture(direction)
+    case direction
+    when :up
+      @floor
+    when :down
+      @wall
+    when :left
+      @wall
+    when :right
+      @wall
+    when :front
+      @wall
+    when :back
+      @wall
     end
   end
 
@@ -141,20 +196,35 @@ class Level
   end
 
   def draw
-    glBegin(GL_QUADS)
-      @faces.each do |face|
-        face.draw
+    @textures.each do |texture|
+      if texture
+        glEnable(GL_TEXTURE_2D)
+        glBindTexture(GL_TEXTURE_2D, texture)
       end
-    glEnd
+
+        glBegin(GL_TRIANGLES)
+          @faces.select {|f| f.texture == texture}.each do |face|
+            face.draw
+          end
+        glEnd
+
+        @window.handle_gl_error
+        glDisable(GL_TEXTURE_2D) if texture
+      end
   end
 
 
   class Face
     include OpenGL
-    def initialize(vertices, normals, colors)
+
+    attr_accessor :texture
+    def initialize(vertices, normals, colors, uvs = nil, texture = nil)
       @vertices = vertices
       @normals  = normals
       @colors   = colors
+
+      @uvs      = uvs
+      @texture  = texture
     end
 
     def draw
@@ -165,7 +235,39 @@ class Level
         glVertex3f(vertex.x, vertex.y, vertex.z)
         glNormal3f(normal.x, normal.y, normal.z)
         glColor3f(color.x, color.y, color.z)
+
+        if @texture
+          uv  = @uvs[i]
+
+          glTexCoord2f(uv.x, uv.y)
+        end
       end
+    end
+  end
+
+  class Texture
+    include OpenGL
+    def initialize(texture_path)
+      @texture = Gosu::Image.new(texture_path, retro: true)
+      array_of_pixels = @texture.to_blob
+
+      tex_names_buf = ' ' * 8
+      glGenTextures(1, tex_names_buf)
+      @texture_id = tex_names_buf.unpack('L2').first
+
+      glBindTexture(GL_TEXTURE_2D, @texture_id)
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, @texture.width, @texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, array_of_pixels)
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
+      glGenerateMipmap(GL_TEXTURE_2D)
+
+      @texture = nil
+    end
+
+    def id
+      @texture_id
     end
   end
 end

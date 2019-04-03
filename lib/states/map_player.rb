@@ -17,7 +17,7 @@ class MapPlayer < State
     @window = @options[:window]
     @map    = @options[:map]
     @player = Player.new(window: @window, x: @map.position.first, y: @map.position.last)
-    @level  = Level.new(map: @options[:map])
+    @level  = Level.new(map: @options[:map], window: @window)
 
     @font = Gosu::Font.new(28)
   end
