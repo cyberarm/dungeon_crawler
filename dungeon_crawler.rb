@@ -3,6 +3,7 @@ require "opengl"
 require "glu"
 
 require_relative "lib/opengl_lib"
+require_relative "lib/shaders/shader"
 require_relative "lib/vector"
 require_relative "lib/state"
 require_relative "lib/map"
@@ -15,6 +16,8 @@ require_relative "lib/level"
 require_relative "lib/level/face"
 require_relative "lib/level/mesh"
 
+GAME_ROOT_PATH = "#{File.expand_path(File.dirname(__FILE__), "../")}"
+
 class Window < Gosu::Window
   include OpenGL
   include GLU
@@ -24,6 +27,7 @@ class Window < Gosu::Window
 
     @current_state = MapBuilder.new(window: self)
     @delta_time = Gosu.milliseconds
+    @screenshot = false
   end
 
   def delta

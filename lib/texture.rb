@@ -1,7 +1,7 @@
 class Texture
   include OpenGL
   def initialize(name, texture_path)
-    @texture = Gosu::Image.new(texture_path, retro: true)
+    @texture = Gosu::Image.new("#{GAME_ROOT_PATH}/#{texture_path}", retro: true)
     array_of_pixels = @texture.to_blob
 
     tex_names_buf = ' ' * 8
@@ -45,6 +45,6 @@ class Texture
     return if @textures
 
     @textures ||= {}
-    Texture.new(:missing, "./../assets/default.png")
+    Texture.new(:missing, "assets/default.png")
   end
 end

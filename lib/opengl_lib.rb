@@ -10,13 +10,13 @@ when :OPENGL_PLATFORM_MACOSX
 when :OPENGL_PLATFORM_LINUX
   gl_library_path = nil
 
-  if File.exists?("/usr/lib/x86_64-linux-gnu/libGL.so") # Ubuntu (Debian)
+  if File.exist?("/usr/lib/x86_64-linux-gnu/libGL.so") # Ubuntu (Debian)
     gl_library_path = "/usr/lib/x86_64-linux-gnu"
 
-  elsif File.exists?("/usr/lib/libGL.so") # Manjaro (ARCH)
+  elsif File.exist?("/usr/lib/libGL.so") # Manjaro (ARCH)
     gl_library_path = "/usr/lib"
 
-  elsif File.exists?("/usr/lib/arm-linux-gnueabihf/libGL.so") # Raspbian (ARM/Raspberry Pi)
+  elsif File.exist?("/usr/lib/arm-linux-gnueabihf/libGL.so") # Raspbian (ARM/Raspberry Pi)
     gl_library_path = "/usr/lib/arm-linux-gnueabihf"
   end
 
