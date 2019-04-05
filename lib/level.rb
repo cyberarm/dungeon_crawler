@@ -12,6 +12,7 @@ class Level
 
     Texture.new("floor", "./../assets/floor.png")
     Texture.new("wall", "./../assets/wall.png")
+    Texture.new("ceiling", "./../assets/ceiling.png")
 
     @mesh = Mesh.new(map: @map)
   end
