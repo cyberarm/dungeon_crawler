@@ -118,11 +118,11 @@ class Player
     nx = Vector.new(normalized.x)
     nz = Vector.new(0, 0, normalized.z)
 
-    if x_tile[:type] == :floor && z_tile[:type] == :floor
+    if (x_tile && x_tile[:type] == :floor) && (z_tile && z_tile[:type] == :floor)
       @position += (nx + nz) * speed
-    elsif x_tile[:type] == :floor
+    elsif (x_tile && x_tile[:type] == :floor)
       @position += nx * speed
-    elsif z_tile[:type] == :floor
+    elsif (z_tile && z_tile[:type] == :floor)
       @position += nz * speed
     else
       moved = false
