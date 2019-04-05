@@ -2,7 +2,8 @@ class Level
   class Mesh
 
     attr_reader :faces
-    def initialize(map:)
+    def initialize(map:, light_level: 1.0)
+      @light_level = light_level
       @map = map
       @faces = []
       @tile_size = 1.0
@@ -184,17 +185,17 @@ class Level
       else
         case direction
         when :up
-          Vector.new(1, 1, 1)
+          Vector.new(1 * @light_level, 1 * @light_level, 1 * @light_level)
         when :down
-          Vector.new(0.8, 0.8, 0.8)
+          Vector.new(0.8 * @light_level, 0.8 * @light_level, 0.8 * @light_level)
         when :left
-          Vector.new(1, 1, 1)
+          Vector.new(1 * @light_level, 1 * @light_level, 1 * @light_level)
         when :right
-          Vector.new(0.8, 0.8, 0.8)
+          Vector.new(0.8 * @light_level, 0.8 * @light_level, 0.8 * @light_level)
         when :front
-          Vector.new(0.4, 0.4, 0.4)
+          Vector.new(0.4 * @light_level, 0.4 * @light_level, 0.4 * @light_level)
         when :back
-          Vector.new(0.6, 0.6, 0.6)
+          Vector.new(0.6 * @light_level, 0.6 * @light_level, 0.6 * @light_level)
         end
       end
     end
