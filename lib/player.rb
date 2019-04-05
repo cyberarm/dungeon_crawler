@@ -110,6 +110,11 @@ class Player
     @orientation.y %= 359.0
   end
 
+  def grid_position
+    # return position in grid space of x and y, not in opengl space of x and z.
+    Vector.new(@position.x.to_i, @position.z.to_i)
+  end
+
   def move(normalized)
     moved = true
     x_tile = @map.tiles.dig((@position.x + normalized.x * speed + (normalized.x * @min_wall_distance)).to_i, @position.z.to_i)
