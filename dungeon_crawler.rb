@@ -24,6 +24,7 @@ class Window < Gosu::Window
 
   def initialize
     super(1280, 600, false)
+    Window.instance = self
 
     @current_state = MapBuilder.new(window: self)
     @delta_time = Gosu.milliseconds
@@ -79,6 +80,19 @@ class Window < Gosu::Window
       $stderr.puts "OpenGL error in: #{gluErrorString(e)} (#{e})\n"
       exit
     end
+  end
+
+  def self.instance
+    @instance
+  end
+
+  def self.instance=(inst)
+    raise ArgumentError, "Must be an instance of Window!" unless inst.is_a?(Window)
+    @instance = inst
+  end
+
+  def self.handle_gl_error
+    Window.instance.handle_gl_error
   end
 end
 

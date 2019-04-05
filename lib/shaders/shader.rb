@@ -34,12 +34,24 @@ class Shader
     end
   end
 
-  attr_reader :name
+  def self.attribute_location(variable)
+    raise RuntimeError, "No active shader!" unless Shader.active_shader
+    Shader.active_shader.attribute_location(variable)
+  end
+
+  def self.set_uniform(variable, value)
+    raise RuntimeError, "No active shader!" unless Shader.active_shader
+    Shader.active_shader.set_uniform(variable, value)
+  end
+
+  attr_reader :name, :program
   def initialize(name:, vertex: "shaders/default.vert", fragment:)
     @name = name
     @vertex_file   = "#{GAME_ROOT_PATH}/#{vertex}"
     @fragment_file = "#{GAME_ROOT_PATH}/#{fragment}"
     @compiled = false
+
+    @program = nil
 
     @error_buffer_size = 1024
     @variable_missing = {}
@@ -158,5 +170,26 @@ class Shader
 
   def compiled?
     @compiled
+  end
+
+  def attribute_location(variable)
+    glGetUniformLocation(@program, variable)
+  end
+
+  def set_uniform(variable, value, location = nil)
+    attr_loc = location ? location : attribute_location(variable)
+
+    case value.class.to_s.downcase.to_sym
+    when :integer
+      glUniform1i(attr_loc, value)
+    when :float
+      glUniform1f(attr_loc, value)
+    when :string
+    when :array
+    else
+      raise NotImplementedError, "Shader support for #{value.class.inspect} not implemented."
+    end
+
+    Window.handle_gl_error
   end
 end

@@ -20,17 +20,23 @@ class Level
   end
 
   def draw
+    glEnable(GL_CULL_FACE)
+    glCullFace(GL_FRONT)
+
+    Shader.use(:default)
+    Shader.set_uniform("in_Time", Gosu.milliseconds)
+
     unless @list_filled
       @list_filled = true
 
       glNewList(@list_id, GL_COMPILE)
-        Shader.use(:default)
         render
-        Shader.stop
       glEndList
     else
       glCallList(@list_id)
     end
+
+    Shader.stop
   end
 
   def render
