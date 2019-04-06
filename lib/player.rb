@@ -117,17 +117,17 @@ class Player
 
   def move(normalized)
     moved = true
-    x_tile = @map.tiles.dig((@position.x + normalized.x * speed + (normalized.x * @min_wall_distance)).to_i, @position.z.to_i)
-    z_tile = @map.tiles.dig(@position.x.to_i, (@position.z + normalized.z * speed + (normalized.z * @min_wall_distance)).to_i)
+    x_slot = @map.grid.dig((@position.x + normalized.x * speed + (normalized.x * @min_wall_distance)).to_i, @position.z.to_i)
+    z_slot = @map.grid.dig(@position.x.to_i, (@position.z + normalized.z * speed + (normalized.z * @min_wall_distance)).to_i)
 
     nx = Vector.new(normalized.x)
     nz = Vector.new(0, 0, normalized.z)
 
-    if (x_tile && x_tile[:type] == :floor) && (z_tile && z_tile[:type] == :floor)
+    if (x_slot && !x_slot.collidable?) && (z_slot && !z_slot.collidable?)
       @position += (nx + nz) * speed
-    elsif (x_tile && x_tile[:type] == :floor)
+    elsif (x_slot && !x_slot.collidable?)
       @position += nx * speed
-    elsif (z_tile && z_tile[:type] == :floor)
+    elsif (z_slot && !z_slot.collidable?)
       @position += nz * speed
     else
       moved = false

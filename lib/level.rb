@@ -5,7 +5,6 @@ class Level
     @options = options
     @window = options[:window]
     @map = options[:map]
-    @tile_size = 1.0
 
     @list_id = glGenLists(1)
     @list_filled = false

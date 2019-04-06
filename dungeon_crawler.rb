@@ -7,13 +7,24 @@ require_relative "lib/shaders/shader"
 require_relative "lib/vector"
 require_relative "lib/state"
 require_relative "lib/map"
+require_relative "lib/slot"
 require_relative "lib/states/map_builder"
 require_relative "lib/states/map_player"
 require_relative "lib/player"
 
 require_relative "lib/texture"
+require_relative "lib/face"
+
+require_relative "lib/entity"
+require_relative "lib/voxel"
+require_relative "lib/thing"
+
+require_relative "lib/voxels/wall"
+require_relative "lib/voxels/floor"
+
+require_relative "lib/things/barrel"
+
 require_relative "lib/level"
-require_relative "lib/level/face"
 require_relative "lib/level/mesh"
 
 GAME_ROOT_PATH = "#{File.expand_path(File.dirname(__FILE__), "../")}"
