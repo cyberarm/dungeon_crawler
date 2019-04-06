@@ -27,7 +27,11 @@ class Level
       case tile[:type]
       when :wall
         slot.voxel = Wall.new(@map, x, y)
-      when :floor
+      when :door_left_to_right
+        slot.voxel = Door.new(@map, x, y, form: :left_to_right)
+      when :door_front_to_back
+        slot.voxel = Door.new(@map, x, y, form: :front_to_back)
+      else# :floor
         slot.voxel = Floor.new(@map, x, y)
         slot.thing = nil#Barrel.new(@map, x, y)
       end

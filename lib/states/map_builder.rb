@@ -75,7 +75,7 @@ class MapBuilder < State
         if @map.tiles[x][y].type == :wall
           buffer+="#"
         else
-          buffer+="-"
+          buffer+=" "
         end
       end
       buffer+="\n"
@@ -96,8 +96,17 @@ class MapBuilder < State
       line.strip.each_char do |char|
         tiles[x] ||= {}
 
-        if char == "#" # WALL
+        case char
+        when "#"
           tiles[x][y] = Map::Tile.new(:wall, @map.wall_color)
+        when "-"
+          tiles[x][y] = Map::Tile.new(:door_left_to_right, @map.wall_color)
+        when "|"
+          tiles[x][y] = Map::Tile.new(:door_front_to_back, @map.wall_color)
+        when "L"
+          tiles[x][y] = Map::Tile.new(:light, @map.wall_color)
+        when "B"
+          tiles[x][y] = Map::Tile.new(:barrel, @map.wall_color)
         else# FLOOR '-'
           tiles[x][y] = Map::Tile.new(:floor, @map.floor_color)
         end

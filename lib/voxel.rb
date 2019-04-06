@@ -8,9 +8,9 @@ class Voxel < Entity
   def texture_front; default_texture end
   def texture_back;  default_texture end
 
-  def build_face(type, x, y)
+  def build_face(type, x, y, _normal = nil)
     vertices, normals, colors = [], [], []
-    norm = normal(type)
+    norm = normal((_normal ? _normal : type))
     colour = color(type)
 
     case type
@@ -22,20 +22,17 @@ class Voxel < Entity
       vertices << Vector.new(x + @tile_size, 0, y)              # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0, y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x,              0, y + @tile_size) # BOTTOM LEFT
-      colour = color(:up)
 
     when :down
       vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP LEFT
       vertices << Vector.new(x             , @tile_size, y)              # TOP RIGHT
       vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # BOTTOM LEFT
 
-      vertices << Vector.new(x, @tile_size,              y)              # TOP RIGHT
-      vertices << Vector.new(x, @tile_size,              y + @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x,              @tile_size, y)              # TOP RIGHT
+      vertices << Vector.new(x,              @tile_size, y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # BOTTOM LEFT
-      colour = color(:down)
 
     when :left
-      norm = normal(:left)
       vertices << Vector.new(x, @tile_size, y)              # TOP LEFT
       vertices << Vector.new(x, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x, 0,          y)              # BOTTOM LEFT
@@ -43,10 +40,17 @@ class Voxel < Entity
       vertices << Vector.new(x, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x, 0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x, 0,          y)              # BOTTOM LEFT
-      colour = color(:left)
+
+    when :inset_left
+      vertices << Vector.new(x, @tile_size, y + @tile_size) # TOP LEFT
+      vertices << Vector.new(x, @tile_size, y)              # TOP RIGHT
+      vertices << Vector.new(x, 0,          y + @tile_size) # BOTTOM LEFT
+
+      vertices << Vector.new(x, @tile_size, y)              # TOP RIGHT
+      vertices << Vector.new(x, 0,          y)              # BOTTOM RIGHT
+      vertices << Vector.new(x, 0,          y + @tile_size) # BOTTOM LEFT
 
     when :right
-      norm = normal(:right)
       vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP LEFT
       vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM LEFT
@@ -54,10 +58,17 @@ class Voxel < Entity
       vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM LEFT
-      colour = color(:right)
+
+    when :inset_right
+      vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM LEFT
+
+      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM LEFT
 
     when :front
-      norm = normal(:front)
       vertices << Vector.new(x + @tile_size, @tile_size, y) # TOP LEFT
       vertices << Vector.new(x,              @tile_size, y) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y) # BOTTOM LEFT
@@ -65,10 +76,17 @@ class Voxel < Entity
       vertices << Vector.new(x,              @tile_size, y) # TOP RIGHT
       vertices << Vector.new(x,              0,          y) # BOTTOM RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y) # BOTTOM LEFT
-      colour = color(:front)
 
-    when :back # done
-      norm = normal(:back)
+    when :inset_front
+      vertices << Vector.new(x,              @tile_size, y) # TOP LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y) # TOP RIGHT
+      vertices << Vector.new(x,           0,             y) # BOTTOM LEFT
+
+      vertices << Vector.new(x + @tile_size, @tile_size, y) # TOP RIGHT
+      vertices << Vector.new(x + @tile_size,          0, y) # BOTTOM RIGHT
+      vertices << Vector.new(x,           0,             y) # BOTTOM LEFT
+
+    when :back
       vertices << Vector.new(x,              @tile_size, y + @tile_size) # TOP LEFT
       vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x,              0,          y + @tile_size) # BOTTOM LEFT
@@ -76,7 +94,17 @@ class Voxel < Entity
       vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x,              0,          y + @tile_size) # BOTTOM LEFT
-      colour = color(:back)
+
+    when :inset_back
+      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP LEFT
+      vertices << Vector.new(x,              @tile_size, y + @tile_size) # TOP RIGHT
+      vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM LEFT
+
+      vertices << Vector.new(x,             @tile_size, y + @tile_size) # TOP RIGHT
+      vertices << Vector.new(x,             0,          y + @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x + @tile_size,0,          y + @tile_size) # BOTTOM LEFT
+    else
+      raise ArgumentError, "Unknown face type: #{type.inspect}"
     end
 
     normals << norm
@@ -116,12 +144,20 @@ class Voxel < Entity
       Vector.new(0, -1.0, 0)
     when :left
       Vector.new(-1.0, 0.0, 0)
+    when :inset_left
+      Vector.new(-1.0, 0.0, 0)
     when :right
       Vector.new(1.0, 0.0, 0)
+    when :inset_right
+      Vector.new(-1.0, 0.0, 0)
     when :front
       Vector.new(0.0, 0.0, 1.0)
+    when :inset_front
+      Vector.new(0.0, 0.0, -1.0)
     when :back
       Vector.new(0.0, 0.0, -1.0)
+    when :inset_back
+      Vector.new(0.0, 0.0, 1.0)
     end
   end
 
@@ -131,13 +167,13 @@ class Voxel < Entity
       texture_up
     when :down
       texture_down
-    when :left
+    when :left, :inset_left
       texture_left
-    when :right
+    when :right, :inset_right
       texture_right
-    when :front
+    when :front, :inset_front
       texture_front
-    when :back
+    when :back, :inset_back
       texture_back
     end
   end
@@ -155,13 +191,13 @@ class Voxel < Entity
         Vector.new(1, 1, 1)
       when :down
         Vector.new(0.8, 0.8, 0.8)
-      when :left
+      when :left, :inset_left
         Vector.new(1, 1, 1)
-      when :right
+      when :right, :inset_right
         Vector.new(0.8, 0.8, 0.8)
-      when :front
+      when :front, :inset_front
         Vector.new(0.4, 0.4, 0.4)
-      when :back
+      when :back, :inset_back
         Vector.new(0.6, 0.6, 0.6)
       end
     end

@@ -1,7 +1,9 @@
 class Entity
-  def initialize(map, x, y)
+  def initialize(map, x, y, options = {})
     @map = map
     @x, @y = x, y
+    @options = options
+
     @faces = []
     @collidable = true
     @tile_size = 1.0

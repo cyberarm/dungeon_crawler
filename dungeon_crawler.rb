@@ -21,6 +21,7 @@ require_relative "lib/thing"
 
 require_relative "lib/voxels/wall"
 require_relative "lib/voxels/floor"
+require_relative "lib/voxels/door"
 
 require_relative "lib/things/barrel"
 
