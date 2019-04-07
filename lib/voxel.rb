@@ -180,7 +180,7 @@ class Voxel < Entity
 
   def color(direction)
     unless direction.is_a?(Symbol)
-      Vector.new(
+      GLColor.new(
         gosu_color.red / 255.0,
         gosu_color.green / 255.0,
         gosu_color.blue / 255.0
@@ -188,17 +188,17 @@ class Voxel < Entity
     else
       case direction
       when :up
-        Vector.new(1, 1, 1)
+        GLColor.new(1, 1, 1)
       when :down
-        Vector.new(0.8, 0.8, 0.8)
+        GLColor.new(0.8, 0.8, 0.8)
       when :left, :inset_left
-        Vector.new(1, 1, 1)
+        GLColor.new(1, 1, 1)
       when :right, :inset_right
-        Vector.new(0.8, 0.8, 0.8)
+        GLColor.new(0.8, 0.8, 0.8)
       when :front, :inset_front
-        Vector.new(0.4, 0.4, 0.4)
+        GLColor.new(0.4, 0.4, 0.4)
       when :back, :inset_back
-        Vector.new(0.6, 0.6, 0.6)
+        GLColor.new(0.6, 0.6, 0.6)
       end
     end
   end

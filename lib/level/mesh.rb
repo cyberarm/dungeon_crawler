@@ -15,12 +15,19 @@ class Level
         @map.width.times do |x|
           tile = @map.tiles[x][y]
 
-          construct_slot(tile, x, y)
+          build_slot(tile, x, y)
+        end
+      end
+      @map.height.times do |y|
+        @map.width.times do |x|
+          slot = @map.grid[x][y]
+
+          slot.construct!
         end
       end
     end
 
-    def construct_slot(tile, x, y)
+    def build_slot(tile, x, y)
       @map.grid[x] ||= {}
       slot = @map.grid[x][y] ||= Map::Slot.new
 
@@ -31,9 +38,11 @@ class Level
         slot.voxel = Door.new(@map, x, y, form: :left_to_right)
       when :door_front_to_back
         slot.voxel = Door.new(@map, x, y, form: :front_to_back)
+      when :barrel
+        slot.voxel = Floor.new(@map, x, y)
+        slot.thing = Barrel.new(@map, x, y)
       else# :floor
         slot.voxel = Floor.new(@map, x, y)
-        slot.thing = nil#Barrel.new(@map, x, y)
       end
     end
 
@@ -43,6 +52,7 @@ class Level
           slot = @map.grid[x][y]
 
           @faces << slot.voxel.faces
+          @faces << slot.thing.faces if slot.thing
         end
       end
 

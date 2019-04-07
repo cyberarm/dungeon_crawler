@@ -7,11 +7,11 @@ class Wall < Voxel
     neighbors = @map.neighbors(@x, @y)
 
     neighbors.each do |side, hash|
-      _tile = hash[:tile]
+      slot = hash[:slot]
 
       next unless side
-      next unless _tile
-      next unless _tile[:type] == :floor
+      next unless slot
+      next unless slot.voxel.is_a?(Floor)
 
       build_face(side, @x, @y)
     end

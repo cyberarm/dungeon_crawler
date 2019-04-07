@@ -20,5 +20,10 @@ class Map
     def collidable?
       (@voxel && @voxel.collidable?) || (@thing && @thing.collidable?)
     end
+
+    def construct!
+      @voxel.construct! if @voxel
+      @thing.construct! if @thing
+    end
   end
 end

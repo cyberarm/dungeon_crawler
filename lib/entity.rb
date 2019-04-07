@@ -8,8 +8,6 @@ class Entity
     @collidable = true
     @tile_size = 1.0
 
-    construct!
-
     setup
   end
 

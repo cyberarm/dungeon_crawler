@@ -9,10 +9,6 @@ class Level
     @list_id = glGenLists(1)
     @list_filled = false
 
-    Texture.new("floor", "assets/floor.png")
-    Texture.new("wall", "assets/wall.png")
-    Texture.new("ceiling", "assets/ceiling.png")
-
     Shader.new(name: :default, fragment: "shaders/default.frag")
 
     @mesh = Mesh.new(map: @map)
@@ -20,7 +16,7 @@ class Level
 
   def draw
     glEnable(GL_CULL_FACE)
-    glCullFace(GL_FRONT)
+    glCullFace(GL_BACK)
 
     Shader.use(:default)
     Shader.set_uniform("in_Time", Gosu.milliseconds)
@@ -43,6 +39,9 @@ class Level
       if texture
         glEnable(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, texture)
+        Shader.set_uniform("in_NoTexture", 0.0)
+      else
+        Shader.set_uniform("in_NoTexture", 1.0)
       end
 
       glBegin(GL_TRIANGLES)

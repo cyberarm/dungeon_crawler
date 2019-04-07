@@ -15,6 +15,11 @@ require_relative "lib/player"
 require_relative "lib/texture"
 require_relative "lib/face"
 
+require_relative "lib/wavefront/model"
+require_relative "lib/wavefront/model_object"
+require_relative "lib/wavefront/material"
+require_relative "lib/wavefront/parser"
+
 require_relative "lib/entity"
 require_relative "lib/voxel"
 require_relative "lib/thing"

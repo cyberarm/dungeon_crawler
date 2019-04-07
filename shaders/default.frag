@@ -6,6 +6,7 @@ varying vec4 var_Color;
 varying vec3 var_Normal;
 varying vec2 var_TexCoord;
 varying float var_Time;
+varying float var_NoTexture;
 
 float TWOPI = 2.0 * 3.14;
 
@@ -31,5 +32,9 @@ void main() {
 
     // "var_Color" contains intensity values so multiplying by the
     // texture color gives us the desired intesity
-    gl_FragColor = (var_Color * vec4(color, 0.0));// * lightCurve();
+    if (var_NoTexture != 1.0) {
+      gl_FragColor = (var_Color * vec4(color, 0.0));// * lightCurve();
+    } else {
+      gl_FragColor = var_Color;// * lightCurve();
+    }
 }

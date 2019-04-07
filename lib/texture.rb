@@ -28,6 +28,7 @@ class Texture
   def self.get(key)
     setup
     t = @textures.dig(key)
+    t = Texture.new(key, "assets/textures/#{key}.png").id if !t && File.exist?("#{GAME_ROOT_PATH}/assets/textures/#{key}.png")
     t ||= @textures[:missing]
   end
 
@@ -38,13 +39,13 @@ class Texture
 
   def self.all
     setup
-    @textures.map {|key, value| value }
+    [nil] + @textures.map {|key, value| value }.flatten
   end
 
   def self.setup
     return if @textures
 
     @textures ||= {}
-    Texture.new(:missing, "assets/default.png")
+    Texture.new(:missing, "assets/textures/default.png")
   end
 end
