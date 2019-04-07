@@ -16,93 +16,93 @@ class Voxel < Entity
     case type
     when :up
       vertices << Vector.new(x,              0, y)              # TOP LEFT
-      vertices << Vector.new(x + @tile_size, 0, y)              # TOP RIGHT
       vertices << Vector.new(x,              0, y + @tile_size) # BOTTOM LEFT
+      vertices << Vector.new(x + @tile_size, 0, y)              # TOP RIGHT
 
-      vertices << Vector.new(x + @tile_size, 0, y)              # TOP RIGHT
-      vertices << Vector.new(x + @tile_size, 0, y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x,              0, y + @tile_size) # BOTTOM LEFT
+      vertices << Vector.new(x + @tile_size, 0, y + @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x + @tile_size, 0, y)              # TOP RIGHT
 
     when :down
       vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # BOTTOM LEFT
       vertices << Vector.new(x             , @tile_size, y)              # TOP RIGHT
-      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # BOTTOM LEFT
 
-      vertices << Vector.new(x,              @tile_size, y)              # TOP RIGHT
-      vertices << Vector.new(x,              @tile_size, y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # BOTTOM LEFT
+      vertices << Vector.new(x,              @tile_size, y + @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x,              @tile_size, y)              # TOP RIGHT
 
     when :left
       vertices << Vector.new(x, @tile_size, y)              # TOP LEFT
-      vertices << Vector.new(x, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x, 0,          y)              # BOTTOM LEFT
+      vertices << Vector.new(x, @tile_size, y + @tile_size) # TOP RIGHT
 
-      vertices << Vector.new(x, @tile_size, y + @tile_size) # TOP RIGHT
-      vertices << Vector.new(x, 0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x, 0,          y)              # BOTTOM LEFT
+      vertices << Vector.new(x, 0,          y + @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x, @tile_size, y + @tile_size) # TOP RIGHT
 
     when :inset_left
       vertices << Vector.new(x, @tile_size, y + @tile_size) # TOP LEFT
-      vertices << Vector.new(x, @tile_size, y)              # TOP RIGHT
       vertices << Vector.new(x, 0,          y + @tile_size) # BOTTOM LEFT
+      vertices << Vector.new(x, @tile_size, y)              # TOP RIGHT
 
-      vertices << Vector.new(x, @tile_size, y)              # TOP RIGHT
-      vertices << Vector.new(x, 0,          y)              # BOTTOM RIGHT
       vertices << Vector.new(x, 0,          y + @tile_size) # BOTTOM LEFT
+      vertices << Vector.new(x, 0,          y)              # BOTTOM RIGHT
+      vertices << Vector.new(x, @tile_size, y)              # TOP RIGHT
 
     when :right
       vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP LEFT
-      vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP RIGHT
 
-      vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP RIGHT
-      vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM LEFT
+      vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM RIGHT
+      vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP RIGHT
 
     when :inset_right
       vertices << Vector.new(x + @tile_size, @tile_size, y)              # TOP LEFT
-      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
 
-      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
-      vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y)              # BOTTOM LEFT
+      vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
 
     when :front
       vertices << Vector.new(x + @tile_size, @tile_size, y) # TOP LEFT
-      vertices << Vector.new(x,              @tile_size, y) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y) # BOTTOM LEFT
+      vertices << Vector.new(x,              @tile_size, y) # TOP RIGHT
 
-      vertices << Vector.new(x,              @tile_size, y) # TOP RIGHT
-      vertices << Vector.new(x,              0,          y) # BOTTOM RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y) # BOTTOM LEFT
+      vertices << Vector.new(x,              0,          y) # BOTTOM RIGHT
+      vertices << Vector.new(x,              @tile_size, y) # TOP RIGHT
 
     when :inset_front
       vertices << Vector.new(x,              @tile_size, y) # TOP LEFT
-      vertices << Vector.new(x + @tile_size, @tile_size, y) # TOP RIGHT
       vertices << Vector.new(x,           0,             y) # BOTTOM LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y) # TOP RIGHT
 
-      vertices << Vector.new(x + @tile_size, @tile_size, y) # TOP RIGHT
-      vertices << Vector.new(x + @tile_size,          0, y) # BOTTOM RIGHT
       vertices << Vector.new(x,           0,             y) # BOTTOM LEFT
+      vertices << Vector.new(x + @tile_size,          0, y) # BOTTOM RIGHT
+      vertices << Vector.new(x + @tile_size, @tile_size, y) # TOP RIGHT
 
     when :back
       vertices << Vector.new(x,              @tile_size, y + @tile_size) # TOP LEFT
-      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x,              0,          y + @tile_size) # BOTTOM LEFT
+      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
 
-      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
-      vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x,              0,          y + @tile_size) # BOTTOM LEFT
+      vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP RIGHT
 
     when :inset_back
       vertices << Vector.new(x + @tile_size, @tile_size, y + @tile_size) # TOP LEFT
-      vertices << Vector.new(x,              @tile_size, y + @tile_size) # TOP RIGHT
       vertices << Vector.new(x + @tile_size, 0,          y + @tile_size) # BOTTOM LEFT
+      vertices << Vector.new(x,              @tile_size, y + @tile_size) # TOP RIGHT
 
-      vertices << Vector.new(x,             @tile_size, y + @tile_size) # TOP RIGHT
-      vertices << Vector.new(x,             0,          y + @tile_size) # BOTTOM RIGHT
       vertices << Vector.new(x + @tile_size,0,          y + @tile_size) # BOTTOM LEFT
+      vertices << Vector.new(x,             0,          y + @tile_size) # BOTTOM RIGHT
+      vertices << Vector.new(x,             @tile_size, y + @tile_size) # TOP RIGHT
     else
       raise ArgumentError, "Unknown face type: #{type.inspect}"
     end
@@ -127,12 +127,12 @@ class Voxel < Entity
   def texture_coordinates
     [
       Vector.new(0, 0), # TOP LEFT
-      Vector.new(1, 0), # TOP RIGHT
       Vector.new(0, 1), # BOTTOM LEFT
-
       Vector.new(1, 0), # TOP RIGHT
+
+      Vector.new(0, 1),  # BOTTOM LEFT
       Vector.new(1, 1), # BOTTOM RIGHT
-      Vector.new(0, 1)  # BOTTOM LEFT
+      Vector.new(1, 0), # TOP RIGHT
     ]
   end
 
