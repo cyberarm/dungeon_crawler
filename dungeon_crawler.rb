@@ -29,6 +29,7 @@ require_relative "lib/voxels/floor"
 require_relative "lib/voxels/door"
 
 require_relative "lib/things/barrel"
+require_relative "lib/things/rising_door"
 
 require_relative "lib/level"
 require_relative "lib/level/mesh"

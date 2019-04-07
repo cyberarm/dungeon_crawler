@@ -14,6 +14,10 @@ class Level
     @mesh = Mesh.new(map: @map)
   end
 
+  def update
+    @mesh.things.each(&:update)
+  end
+
   def draw
     glEnable(GL_CULL_FACE)
     glCullFace(GL_BACK)
@@ -29,6 +33,10 @@ class Level
       glEndList
     else
       glCallList(@list_id)
+    end
+
+    @mesh.things.each do |thing|
+      thing.draw
     end
 
     Shader.stop

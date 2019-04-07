@@ -42,7 +42,7 @@ class MapPlayer < State
         )
         @map.draw
         Gosu.draw_rect(
-          @player.position.x * @map.size-1, @player.position.z * @map.size-1,
+          @player.position.x * @map.size, @player.position.z * @map.size,
           @map.size, @map.size,
           Gosu::Color::RED
         )
@@ -69,6 +69,7 @@ class MapPlayer < State
     end
 
     @player.update
+    @level.update
   end
 
   def button_down(id)

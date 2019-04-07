@@ -18,6 +18,12 @@ class Entity
   def setup
   end
 
+  def draw
+  end
+
+  def update
+  end
+
   def faces
     @faces
   end

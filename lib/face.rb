@@ -7,10 +7,11 @@ class Face
     @vertices = vertices
     @normals  = normals
     @colors   = colors
-    @brightness = 1.0
-
     @uvs      = uvs
+
     @texture  = texture
+
+    @brightness = 1.0
   end
 
   def draw

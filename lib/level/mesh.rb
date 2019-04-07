@@ -1,10 +1,11 @@
 class Level
   class Mesh
 
-    attr_reader :faces
+    attr_reader :faces, :things
     def initialize(map:)
       @map = map
       @faces = []
+      @things = []
 
       process_map
       collect_faces
@@ -36,8 +37,10 @@ class Level
         slot.voxel = Wall.new(@map, x, y)
       when :door_left_to_right
         slot.voxel = Door.new(@map, x, y, form: :left_to_right)
+        slot.thing = RisingDoor.new(@map, x, y, form: :left_to_right)
       when :door_front_to_back
         slot.voxel = Door.new(@map, x, y, form: :front_to_back)
+        slot.thing = RisingDoor.new(@map, x, y, form: :front_to_back)
       when :barrel
         slot.voxel = Floor.new(@map, x, y)
         slot.thing = Barrel.new(@map, x, y)
@@ -52,7 +55,7 @@ class Level
           slot = @map.grid[x][y]
 
           @faces << slot.voxel.faces
-          @faces << slot.thing.faces if slot.thing
+          @things << slot.thing if slot.thing
         end
       end
 
