@@ -23,6 +23,7 @@ require_relative "lib/wavefront/parser"
 require_relative "lib/entity"
 require_relative "lib/voxel"
 require_relative "lib/thing"
+require_relative "lib/behavior"
 
 require_relative "lib/voxels/wall"
 require_relative "lib/voxels/floor"
@@ -30,6 +31,10 @@ require_relative "lib/voxels/door"
 
 require_relative "lib/things/barrel"
 require_relative "lib/things/rising_door"
+
+require_relative "lib/behaviors/wander"
+require_relative "lib/behaviors/rising_door"
+require_relative "lib/behaviors/sliding_door"
 
 require_relative "lib/level"
 require_relative "lib/level/mesh"

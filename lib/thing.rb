@@ -2,12 +2,21 @@
 # a Thing is a "billboards" which alway faces the player.
 class Thing < Entity
   include OpenGL
+
+  attr_reader :map
+  attr_accessor :drawable, :position, :orientation
   def initialize(map, x, y, options = {})
-    super(map, x, y, options)
+    @position = Vector.new(x + 0.5, 0, y + 0.5) # + 0.5 to center on tile
+
+    # X -> Roll
+    # Y -> Yaw
+    # Z -> Pitch
+    @orientation = Vector.new
 
     @list_id = glGenLists(1)
     @list_filled = false
     @drawable = true
+    super(map, x, y, options)
   end
 
   def draw
@@ -39,9 +48,21 @@ class Thing < Entity
       glCallList(@list_id)
     else
       glPushMatrix
-      glTranslatef(@x + 0.5, 0, @y + 0.5)
+      glTranslatef(@position.x, @position.y, @position.z)
+      glRotatef(@orientation.z, 1, 0, 0) # pitch
+      glRotatef(@orientation.y, 0, 1, 0) # yaw
+      glRotatef(@orientation.x, 0, 0, 1) # roll
+
       glCallList(@list_id)
       glPopMatrix
     end
+  end
+
+  def drawable?
+    @drawable
+  end
+
+  def update
+    @behavior.update if @behavior
   end
 end

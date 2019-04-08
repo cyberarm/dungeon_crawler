@@ -36,7 +36,7 @@ class Level
     end
 
     @mesh.things.each do |thing|
-      thing.draw
+      thing.draw if thing.drawable
     end
 
     Shader.stop

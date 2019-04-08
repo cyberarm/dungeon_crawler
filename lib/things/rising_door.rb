@@ -8,7 +8,9 @@ class RisingDoor < Thing
     case @options[:form]
     when :left_to_right
     when :front_to_back
-      # @orientation.y = 90
+      @orientation.y = 90
     end
+
+    @behavior = RisingDoorBehavior.new(self)
   end
 end

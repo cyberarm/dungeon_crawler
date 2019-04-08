@@ -5,5 +5,6 @@ class Barrel < Thing
 
   def setup
     @faces = Wavefront::Model.new(:barrel).faces
+    @behavior = WanderBehavior.new(self)
   end
 end
