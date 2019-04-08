@@ -23,6 +23,7 @@ class Player
     @speed = 1.5
 
     @field_of_view = 45.0
+    # @field_of_view = 70.0
     @view_distance_near= 0.01
     @view_distance_far = 50.0
 
@@ -148,7 +149,7 @@ class Player
     @orientation.y -= (@mouse.x - x) * @mouse_sensitivity
     @orientation.y %= 360.0
 
-    if x < 1 || x > @window.width - 1
+    if x < 1 || x > @window.width - 2
       @window.mouse_x = @window.width/2
       @mouse.x = @window.width/2
     else
@@ -158,7 +159,7 @@ class Player
     @orientation.z -= (@mouse.y - y) * @mouse_sensitivity
     @orientation.z = @orientation.z.clamp(-90.0, 90.0)
 
-    if y < 1 || y > @window.height - 1
+    if y < 1 || y > @window.height - 2
       @window.mouse_y = @window.height/2
       @mouse.y = @window.height/2
     else

@@ -47,6 +47,7 @@ class Window < Gosu::Window
 
   def initialize
     super(1280, 600, false)
+    # super(Gosu.screen_width, Gosu.screen_height, true)
     Window.instance = self
 
     @current_state = MapBuilder.new(window: self)
