@@ -1,0 +1,15 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    gosu (0.14.5)
+    opengl-bindings (1.6.8)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  gosu
+  opengl-bindings
+
+BUNDLED WITH
+   1.17.2
