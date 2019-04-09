@@ -44,18 +44,17 @@ class Thing < Entity
         glDisable(GL_TEXTURE_2D) if texture
       end
       glEndList
-
-      glCallList(@list_id)
-    else
-      glPushMatrix
-      glTranslatef(@position.x, @position.y, @position.z)
-      glRotatef(@orientation.z, 1, 0, 0) # pitch
-      glRotatef(@orientation.y, 0, 1, 0) # yaw
-      glRotatef(@orientation.x, 0, 0, 1) # roll
-
-      glCallList(@list_id)
-      glPopMatrix
     end
+
+
+    glPushMatrix
+    glTranslatef(@position.x, @position.y, @position.z)
+    glRotatef(@orientation.z, 1, 0, 0) # pitch
+    glRotatef(@orientation.y, 0, 1, 0) # yaw
+    glRotatef(@orientation.x, 0, 0, 1) # roll
+
+    glCallList(@list_id)
+    glPopMatrix
   end
 
   def drawable?
