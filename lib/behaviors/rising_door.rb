@@ -3,25 +3,19 @@ class RisingDoorBehavior < Behavior
     @door_speed = 0.6 # move by n every second
     @open_pos = 0.99
     @closed_pos = 0
-
-    @opening = true
-    @closed_time = 0
   end
 
   def update
-    if @opening
-      @opening = false if open?
-      @closed_time = 0
-
-      open_door unless open?
-    else
-      if closed?
-        @closed_time += Window.instance.delta
-        @opening = true if @closed_time > 2.0
-      end
-
-      close_door unless closed?
+    nearby = @thing.map.players.detect do |player|
+      @thing.position.gl_distance2d(player.position) < 2.0
     end
+
+    if nearby
+      open_door
+    else
+      close_door
+    end
+
   end
 
   def open?

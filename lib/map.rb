@@ -1,7 +1,7 @@
 class Map
   Tile = Struct.new(:type, :color)
 
-  attr_reader :tiles, :grid, :width, :height, :position,
+  attr_reader :tiles, :grid, :width, :height, :position, :players,
               :tunnels, :max_length, :size, :max_tunnels, :current_direction,
               :current_walk_distance
   def initialize(width:, height:, tunnels:, max_length:, size: 16)
@@ -15,6 +15,7 @@ class Map
 
     @tiles = {}
     @grid  = {} # Used for slots
+    @players = []
 
     @last_step_time = Gosu.milliseconds
     @time_between = 0

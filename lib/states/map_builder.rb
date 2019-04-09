@@ -104,9 +104,9 @@ class MapBuilder < State
         when "|"
           tiles[x][y] = Map::Tile.new(:door_front_to_back, @map.wall_color)
         when "L"
-          tiles[x][y] = Map::Tile.new(:light, @map.wall_color)
+          tiles[x][y] = Map::Tile.new(:light, @map.floor_color)
         when "B"
-          tiles[x][y] = Map::Tile.new(:barrel, @map.wall_color)
+          tiles[x][y] = Map::Tile.new(:barrel, @map.floor_color)
         else# FLOOR '-'
           tiles[x][y] = Map::Tile.new(:floor, @map.floor_color)
         end

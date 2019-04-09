@@ -1,26 +1,44 @@
 class WanderBehavior < Behavior
   def setup
     @goal = Vector.new(@thing.position.x, 0, @thing.position.z)
+    @last_pos = @thing.position.clone - 0.1
     @direction = Vector.new
     @speed = @options[:speed] ? @options[:speed] : 1.0
     @min_wall_distance = 0.5
+
+    @last_timeout = Gosu.milliseconds
+    @move_timeout = 250
   end
 
   def update
     if at_goal?
       choose_goal
     else
+      @last_pos = @thing.position.clone
+
       if true#facing?(@goal)
         move_towards(@direction, @speed * Window.instance.delta)
       else
         turn_towards(@goal)
       end
     end
+
   end
 
   def at_goal?
     pos = @thing.position
-    (@goal - pos).sum.abs <= 0.05
+    if pos == @last_pos
+      if Gosu.milliseconds > @last_timeout + @move_timeout
+        @last_timeout = Gosu.milliseconds
+        puts "#{@thing.class}|#{@thing.object_id} stuck! Unstucking... Distance from goal: #{@goal.distance(pos)}, direction: #{@direction.to_s}"
+        return true
+      else
+        return false
+      end
+    else
+      @last_timeout = Gosu.milliseconds
+      @goal.gl_distance2d(pos) <= 0.05
+    end
   end
 
   def choose_goal
@@ -36,7 +54,9 @@ class WanderBehavior < Behavior
       end
     end
 
-    choice = choices[rand(choices.size-1)]
+    return unless choices.size > 0
+
+    choice = choices[rand(0..choices.size-1)]
     case choice.y
     when :left
       @direction = Vector.new(-1)

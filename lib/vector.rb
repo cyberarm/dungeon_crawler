@@ -122,6 +122,21 @@ class Vector
     @x + @y + @z
   end
 
+  # 2D distance using X and Y
+  def distance(other)
+    Math.sqrt((@x-other.x)**2 + (@y-other.y)**2)
+  end
+
+  # 2D distance using X and Z
+  def gl_distance2d(other)
+    Math.sqrt((@x-other.x)**2 + (@z-other.z)**2)
+  end
+
+  # 3D distance using X, Y, and Z
+  def distance3d(other)
+    Math.sqrt((@x-other.x)**2 + (@y-other.y)**2 + (@z-other.z)**2)
+  end
+
   def to_a
     [@x, @y, @z, @weight]
   end

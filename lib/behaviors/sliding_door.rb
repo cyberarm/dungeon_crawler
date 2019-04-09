@@ -1,12 +1,20 @@
 class SlidingDoorBehavior < Behavior
   def setup
-    @door_speed = 0.1 # move by n every second
+    @door_speed = 0.6 # move by n every second
     @position = @thing.position.clone
     @end_pos = 0.99
   end
 
   def update
-    open_door
+    nearby = @thing.map.players.detect do |player|
+      @thing.position.distance(player.position) < 2.0
+    end
+
+    if nearby
+      open_door
+    else
+      close_door
+    end
   end
 
   def open_door
