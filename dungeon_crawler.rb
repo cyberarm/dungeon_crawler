@@ -50,6 +50,7 @@ class Window < Gosu::Window
     # super(Gosu.screen_width, Gosu.screen_height, true)
     Window.instance = self
 
+    self.caption = "Dungeon Crawler"
     @current_state = MapBuilder.new(window: self)
     @delta_time = Gosu.milliseconds
     @screenshot = false

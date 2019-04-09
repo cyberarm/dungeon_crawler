@@ -1,7 +1,9 @@
 class Entity
+  attr_reader :position
   def initialize(map, x, y, options = {})
     @map = map
     @x, @y = x, y
+    @position = Vector.new(@x, 0, @y)
     @options = options
 
     @faces = []

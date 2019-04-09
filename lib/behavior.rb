@@ -14,9 +14,8 @@ class Behavior
   def update
   end
 
-  def can_move?(x, z)
-    bool = Vector.new(false, 0, false)
-    normalized = Vector.new(x, 0, z).normalized
+  def can_move?(normalized, speed)
+    bool = false
 
     # Disable Thing's collision while checking if it can move
     thing_is_collidable = @thing.collidable?
@@ -30,12 +29,11 @@ class Behavior
     nz = Vector.new(0, 0, normalized.z)
 
     if (x_slot && !x_slot.collidable?) && (z_slot && !z_slot.collidable?)
-      bool.x = true
-      bool.z = true
+      bool = true
     elsif (x_slot && !x_slot.collidable?)
-      bool.x = true
+      bool = true
     elsif (z_slot && !z_slot.collidable?)
-      bool.z = true
+      bool = true
     end
 
     @thing.collidable = thing_is_collidable
@@ -48,8 +46,7 @@ class Behavior
     @thing.position.z = z
   end
 
-  def move_towards(x, z, speed)
-    normalized = Vector.new(x, 0, z).normalized
+  def move_towards(normalized, speed)
     x_slot = @thing.map.grid.dig((@thing.position.x + normalized.x * speed + (normalized.x * @min_wall_distance)).to_i, @thing.position.z.to_i)
     z_slot = @thing.map.grid.dig(@thing.position.x.to_i, (@thing.position.z + normalized.z * speed + (normalized.z * @min_wall_distance)).to_i)
 
@@ -63,6 +60,7 @@ class Behavior
     elsif (z_slot && !z_slot.collidable?)
       @thing.position += nz * speed
     else
+      puts "Failed to MOVE"
       moved = false
     end
   end

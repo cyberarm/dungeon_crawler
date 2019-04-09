@@ -6,11 +6,11 @@ class Thing < Entity
   attr_reader :map
   attr_accessor :drawable, :position, :orientation
   def initialize(map, x, y, options = {})
-    @position = Vector.new(x + 0.5, 0, y + 0.5) # + 0.5 to center on tile
-
     # X -> Roll
     # Y -> Yaw
     # Z -> Pitch
+    x += 0.5
+    y += 0.5 # + 0.5 to center on tile
     @orientation = Vector.new
 
     @list_id = glGenLists(1)

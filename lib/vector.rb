@@ -119,7 +119,7 @@ class Vector
   end
 
   def sum
-    @x + @y + @z + @weight
+    @x + @y + @z
   end
 
   def to_a
