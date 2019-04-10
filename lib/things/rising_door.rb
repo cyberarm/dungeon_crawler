@@ -1,17 +1,20 @@
 class RisingDoor < Thing
+  def setup
+    @faces = Wavefront::Model.new(:door).faces
+    @behavior = RisingDoorBehavior.new(self)
+  end
+
   def construct!
     @collidable = true
 
     case @options[:form]
     when :left_to_right
     when :front_to_back
-      @orientation.y = 90
-      # rotate_y(90) # rotate vertices around the y axis
+      rotate_y!(90)
     end
   end
 
-  def setup
-    @faces = Wavefront::Model.new(:door).faces
-    @behavior = RisingDoorBehavior.new(self)
+  def update
+    rotate_y!(0.1)
   end
 end

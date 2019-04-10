@@ -17,6 +17,31 @@ class Thing < Entity
     @list_filled = false
     @drawable = true
     super(map, x, y, options)
+
+    verts = @faces.map {|f| f.vertices}.flatten
+    @min = verts.sample
+    @max = verts.sample
+
+    verts.each do |vert|
+      @min = vert.clone if vert.sum < @min.sum
+      @max = vert.clone if vert.sum > @max.sum
+    end
+
+    @center = (@max+@min)/2
+  end
+
+  def rotate_y!(degrees)
+    radians = degrees.degrees_to_radians
+
+    @faces.each do |face|
+      face.vertices.each do |vert|
+        offset = (vert - @center)
+        vert.x = offset.z * Math.sin(radians) + offset.x * Math.cos(radians)
+        vert.z = offset.z * Math.cos(radians) - offset.x * Math.sin(radians)
+      end
+    end
+
+    @list_filled = false
   end
 
   def draw
