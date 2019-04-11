@@ -1,7 +1,7 @@
-class RisingDoor < Thing
+class SlidingDoor < Thing
   def setup
-    @faces = Wavefront::Model.new(:door).faces
-    @behavior = RisingDoorBehavior.new(self)
+    @faces = Wavefront::Model.new(:demon).faces
+    @behavior = SlidingDoorBehavior.new(self)
   end
 
   def construct!

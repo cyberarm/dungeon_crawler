@@ -3,7 +3,7 @@
 class Thing < Entity
   include OpenGL
 
-  attr_reader :map
+  attr_reader :map, :options
   attr_accessor :drawable, :position, :orientation
   def initialize(map, x, y, options = {})
     # X -> Roll
@@ -18,27 +18,50 @@ class Thing < Entity
     @drawable = true
     super(map, x, y, options)
 
-    verts = @faces.map {|f| f.vertices}.flatten
-    @min = verts.sample
-    @max = verts.sample
+    @verts = @faces.map {|f| f.vertices}.flatten.uniq!
+    @min = @verts.sample
+    @max = @verts.sample
 
-    verts.each do |vert|
+    @verts.each do |vert|
       @min = vert.clone if vert.sum < @min.sum
       @max = vert.clone if vert.sum > @max.sum
     end
 
-    @center = (@max+@min)/2
+    @center = (@max+@min)/2.0
+    @origin = Vector.new(0,0,0)
+  end
+
+  def rotate_x!(degrees)
+    radians = degrees.degrees_to_radians
+
+    @verts.each do |vert|
+      offset = (vert - @origin)
+      vert.y = (offset.z * Math.sin(radians) + offset.y * Math.cos(radians)) + @origin.y
+      vert.z = (offset.z * Math.cos(radians) - offset.y * Math.sin(radians)) + @origin.z
+    end
+
+    @list_filled = false
   end
 
   def rotate_y!(degrees)
     radians = degrees.degrees_to_radians
 
-    @faces.each do |face|
-      face.vertices.each do |vert|
-        offset = (vert - @center)
-        vert.x = offset.z * Math.sin(radians) + offset.x * Math.cos(radians)
-        vert.z = offset.z * Math.cos(radians) - offset.x * Math.sin(radians)
-      end
+    @verts.each do |vert|
+      offset = (vert - @origin)
+      vert.x = (offset.z * Math.sin(radians) + offset.x * Math.cos(radians)) + @origin.x
+      vert.z = (offset.z * Math.cos(radians) - offset.x * Math.sin(radians)) + @origin.z
+    end
+
+    @list_filled = false
+  end
+
+  def rotate_z!(degrees)
+    radians = degrees.degrees_to_radians
+
+    @verts.each do |vert|
+      offset = (vert - @origin)
+      vert.x = (offset.y * Math.sin(radians) + offset.x * Math.cos(radians)) + @origin.x
+      vert.y = (offset.y * Math.cos(radians) - offset.x * Math.sin(radians)) + @origin.y
     end
 
     @list_filled = false

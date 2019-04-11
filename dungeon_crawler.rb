@@ -31,6 +31,7 @@ require_relative "lib/voxels/door"
 
 require_relative "lib/things/barrel"
 require_relative "lib/things/rising_door"
+require_relative "lib/things/sliding_door"
 
 require_relative "lib/behaviors/wander"
 require_relative "lib/behaviors/rising_door"
