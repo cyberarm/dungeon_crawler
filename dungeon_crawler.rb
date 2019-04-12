@@ -40,7 +40,7 @@ require_relative "lib/behaviors/sliding_door"
 require_relative "lib/level"
 require_relative "lib/level/mesh"
 
-GAME_ROOT_PATH = "#{File.expand_path(File.dirname(__FILE__), "../")}"
+GAME_ROOT_PATH = File.expand_path(File.dirname(__FILE__))
 
 class Window < Gosu::Window
   include OpenGL
