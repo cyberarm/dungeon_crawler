@@ -18,6 +18,6 @@ class Wall < Voxel
   end
 
   def default_texture
-    Texture.get("wall")
+    Texture.get("brick_wall")
   end
 end
