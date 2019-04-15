@@ -64,10 +64,18 @@ class Player
   def draw
     Gosu.draw_rect(
       (@window.width / 2) - 10,
+      (@window.height / 2) - 1,
+      20,
+      2,
+      Gosu::Color.rgba(255, 255, 255, 127),
+      Float::INFINITY
+    )
+    Gosu.draw_rect(
+      (@window.width / 2) - 1,
       (@window.height / 2) - 10,
+      2,
       20,
-      20,
-      Gosu::Color.rgba(255, 0, 0, 63),
+      Gosu::Color.rgba(255, 255, 255, 127),
       Float::INFINITY
     )
   end
