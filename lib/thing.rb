@@ -3,7 +3,7 @@
 class Thing < Entity
   include OpenGL
 
-  attr_reader :map, :options
+  attr_reader :map, :options, :bounding_box
   attr_accessor :drawable, :position, :orientation
   def initialize(map, x, y, options = {})
     # X -> Roll
@@ -29,6 +29,8 @@ class Thing < Entity
 
     @center = (@max+@min)/2.0
     @origin = Vector.new(0,0,0)
+    @bounding_box = BoundingBox.new(@min.clone, @max.clone)
+    refit_bounding_box
   end
 
   def rotate_x!(degrees)
@@ -40,6 +42,7 @@ class Thing < Entity
       vert.z = (offset.z * Math.cos(radians) - offset.y * Math.sin(radians)) + @origin.z
     end
 
+    refit_bounding_box
     @list_filled = false
   end
 
@@ -52,6 +55,7 @@ class Thing < Entity
       vert.z = (offset.z * Math.cos(radians) - offset.x * Math.sin(radians)) + @origin.z
     end
 
+    refit_bounding_box
     @list_filled = false
   end
 
@@ -64,7 +68,12 @@ class Thing < Entity
       vert.y = (offset.y * Math.cos(radians) - offset.x * Math.sin(radians)) + @origin.y
     end
 
+    refit_bounding_box
     @list_filled = false
+  end
+
+  def refit_bounding_box
+    @bounding_box.shrink_wrap!(@verts)
   end
 
   def draw

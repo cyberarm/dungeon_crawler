@@ -24,6 +24,8 @@ require_relative "lib/entity"
 require_relative "lib/voxel"
 require_relative "lib/thing"
 require_relative "lib/behavior"
+require_relative "lib/bounding_box"
+require_relative "lib/collision_manager"
 
 require_relative "lib/voxels/wall"
 require_relative "lib/voxels/floor"

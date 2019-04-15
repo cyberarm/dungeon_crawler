@@ -3,6 +3,7 @@ class Player
   include GLU
 
   attr_accessor :position, :orientation
+  attr_reader :bounding_box
   def initialize(options = {})
     @options = options
     @window = options[:window]
@@ -13,10 +14,11 @@ class Player
     @head_bob_speed    = 0.2
     @head_bob_factor   = 0.015
 
-    @position = Vector.new(options[:x], @head_height, options[:y])
+    @position = Vector.new(options[:x], 0, options[:y])
     @new_position = Vector.new
 
     @orientation = Vector.new(0, 0, 0)
+    @bounding_box = BoundingBox.new(Vector.new(-0.1, 0, -0.1), Vector.new(0.1, @head_height.abs, 0.1))
 
     @strafe_tilt = 0.1
     @turn_speed = 50.0
@@ -54,7 +56,7 @@ class Player
     glRotatef(@orientation.z, 1, 0, 0) # pitch
     glRotatef(@orientation.y, 0, 1, 0) # yaw
     glRotatef(@orientation.x, 0, 0, 1) # roll
-    glTranslatef(-@position.x, @position.y, -@position.z)
+    glTranslatef(-@position.x, @position.y + @head_height, -@position.z)
 
     @window.handle_gl_error
   end
@@ -139,7 +141,7 @@ class Player
 
   def bob_head
     @head_bob_position += @head_bob_speed
-    @position.y = (Math.sin(@head_bob_position) * @head_bob_factor) + @head_height
+    @position.y = (Math.sin(@head_bob_position) * @head_bob_factor)# + @head_height
   end
 
   def mouse_look

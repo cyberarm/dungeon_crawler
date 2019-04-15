@@ -15,7 +15,8 @@ class Level
   end
 
   def update
-    @mesh.things.each(&:update)
+    @map.things.each(&:update)
+    @map.collision_manager.update
   end
 
   def draw
@@ -35,7 +36,7 @@ class Level
       glCallList(@list_id)
     end
 
-    @mesh.things.each do |thing|
+    @map.things.each do |thing|
       thing.draw if thing.drawable
     end
 
