@@ -118,6 +118,21 @@ class Vector
     self / Vector.new(mag, mag, mag)
   end
 
+  def direction
+    # z is pitch
+    # y is yaw
+    # x is roll
+    _x = -Math.sin(@y.degrees_to_radians) * Math.cos(@z.degrees_to_radians)
+    _y = Math.sin(@z.degrees_to_radians)
+    _z = Math.cos(@y.degrees_to_radians) * Math.cos(@z.degrees_to_radians)
+
+    Vector.new(_x, _y, _z)
+  end
+
+  def inverse
+    Vector.new(1.0 / @x, 1.0 / @y, 1.0 / @z)
+  end
+
   def sum
     @x + @y + @z
   end

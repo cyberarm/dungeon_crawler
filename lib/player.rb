@@ -61,6 +61,17 @@ class Player
     @window.handle_gl_error
   end
 
+  def draw
+    Gosu.draw_rect(
+      (@window.width / 2) - 10,
+      (@window.height / 2) - 10,
+      20,
+      20,
+      Gosu::Color.rgba(255, 0, 0, 63),
+      Float::INFINITY
+    )
+  end
+
   def update
     # Use vector math to prevent diagonal speed increase
     normalized = @new_position.normalized
@@ -69,6 +80,17 @@ class Player
     bob_head if moved && @new_position.magnitude.abs > 0.001
     mouse_look
     @new_position = Vector.new
+
+    pos = @position.clone
+    pos.y += @head_height.abs # Move ray to head level
+    ray = Ray.new(pos, @orientation.direction * -1)
+    @map.collision_manager.entities.each do |ent|
+      next if ent.entity == self
+
+      if ray.intersect?(ent.bounding_box)
+        puts "Looking at #{ent.entity.class}"
+      end
+    end
   end
 
   def speed
@@ -141,7 +163,7 @@ class Player
 
   def bob_head
     @head_bob_position += @head_bob_speed
-    @position.y = (Math.sin(@head_bob_position) * @head_bob_factor)# + @head_height
+    @position.y = (Math.sin(@head_bob_position) * @head_bob_factor)
   end
 
   def mouse_look

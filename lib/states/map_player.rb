@@ -31,6 +31,8 @@ class MapPlayer < State
       @window.handle_gl_error
     end
 
+    @player.draw
+
     @font.draw_text(
       "FPS: #{Gosu.fps}\nPlayer X: #{@player.position.x.round(1)}, Y: #{@player.position.y.round(1)}, Z: #{@player.position.z.round(1)}\nPlayer Roll: #{@player.orientation.x.round(1)}, Yaw: #{@player.orientation.y.round(1)}, Pitch: #{@player.orientation.z.round(1)}", 10, 10, 10)
 
