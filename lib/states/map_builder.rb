@@ -10,7 +10,7 @@ class MapBuilder < State
     unless ARGV.first && ARGV.first.end_with?(".txt")
       @map.build
     else
-      load_map(File.expand_path("./../")+"/"+ARGV.first)
+      load_map(File.expand_path("./")+"/"+ARGV.first)
     end
 
     @font = Gosu::Font.new(18)
@@ -81,7 +81,7 @@ class MapBuilder < State
       buffer+="\n"
     end
 
-    File.open("../data/map_#{Time.now.to_i}.txt", "w") {|f| f.write(buffer) }
+    File.open("data/map_#{Time.now.to_i}.txt", "w") {|f| f.write(buffer) }
     puts "Saved."
   end
 
