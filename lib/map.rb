@@ -19,6 +19,7 @@ class Map
     @things  = []
     @collision_manager = CollisionManager.new(self)
 
+    @generated_things = false
     @last_step_time = Gosu.milliseconds
     @time_between = 0
 
@@ -56,6 +57,12 @@ class Map
       @last_step_time = Gosu.milliseconds
 
       @steps_per_update.times { walk }
+
+      if @tunnels <= 0 && !@generated_things
+        place_things
+        puts "Placed things!"
+        @generated_things = true
+      end
     end
   end
 
@@ -90,12 +97,110 @@ class Map
     end
   end
 
+  def place_things
+    place_barrels
+    place_doors
+    place_planters
+    place_weapons
+    place_enemies
+  end
+
+  def place_barrels
+    @width.times do |x|
+      @height.times do |y|
+        if tile = tiles.dig(x, y)
+          next unless tile.type == :floor
+
+          can_place = true
+          tile_neighbors(x, y).each do |dir, side|
+            can_place = false unless side[:tile].type == :floor
+          end
+
+          @things.each do |thing|
+            can_place = false if thing.position.gl_distance2d(Vector.new(x, 0, y)) < 2.0
+          end
+
+          if can_place && rand(0.0..1.0) > 0.1
+            @tiles[x][y].type = :barrel
+            @things << Barrel.new(self, x, y)
+          end
+        end
+      end
+    end
+  end
+
+  def place_doors
+    @width.times do |x|
+      @height.times do |y|
+        if tile = tiles.dig(x, y)
+          next unless tile.type == :floor
+
+          can_place = true
+          tile_neighbors(x, y).each do |dir, side|
+            can_place = false unless side[:tile].type == :floor
+          end
+
+          @things.each do |thing|
+            can_place = false if thing.position.gl_distance2d(Vector.new(x, 0, y)) < 2.0
+          end
+
+          if can_place && rand(0.0..1.0) > 0.1
+            @tiles[x][y].type = :door_left_to_right
+            @things << RisingDoor.new(self, x, y)
+          end
+        end
+      end
+    end
+  end
+
+  def place_planters
+    @width.times do |x|
+      @height.times do |y|
+        if tile = tiles.dig(x, y)
+          next unless tile.type == :floor
+
+          can_place = true
+          tile_neighbors(x, y).each do |dir, side|
+            can_place = false unless side[:tile].type == :floor
+          end
+
+          @things.each do |thing|
+            can_place = false if thing.position.gl_distance2d(Vector.new(x, 0, y)) < 2.0
+          end
+
+          if can_place && rand(0.0..1.0) > 0.1
+            @tiles[x][y].type = :planter
+            @things << Planter.new(self, x, y)
+          end
+        end
+      end
+    end
+  end
+
+  def place_weapons
+  end
+
+  def place_enemies
+  end
+
+  # Used by Things to query for neighbors when game is running
   def neighbors(x, y)
     list = {}
     list[:left]  = { slot: @grid.dig(x - 1, y), x: x - 1, y: y } # LEFT
     list[:right] = { slot: @grid.dig(x + 1, y), x: x + 1, y: y } # RIGHT
     list[:front] = { slot: @grid.dig(x, y - 1), x: x,     y: y - 1 } # FRONT
     list[:back]  = { slot: @grid.dig(x, y + 1), x: x,     y: y + 1 } # BACK
+
+    return list
+  end
+
+  # Used for placing Things when map is created
+  def tile_neighbors(x, y)
+    list = {}
+    list[:left]  = { tile: @tiles.dig(x - 1, y), x: x - 1, y: y } # LEFT
+    list[:right] = { tile: @tiles.dig(x + 1, y), x: x + 1, y: y } # RIGHT
+    list[:front] = { tile: @tiles.dig(x, y - 1), x: x,     y: y - 1 } # FRONT
+    list[:back]  = { tile: @tiles.dig(x, y + 1), x: x,     y: y + 1 } # BACK
 
     return list
   end

@@ -41,7 +41,7 @@ class CollisionManager
   def handle_collisions
     puts "#{@collisions.count} collisions detected!" if @collisions.size > 0
     @collisions.each do |collision|
-      puts "#{collision.ent_a.entity.class} collided with #{collision.ent_b.entity.class}"
+      puts "#{collision.ent_a.entity.class}|#{collision.ent_a.entity.object_id} collided with #{collision.ent_b.entity.class}|#{collision.ent_b.entity.object_id}"
     end
     puts if @collisions.size > 0
   end

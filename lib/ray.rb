@@ -1,5 +1,8 @@
 class Ray
   def initialize(origin, direction)
+    raise "Origin must be a Vector!" unless origin.is_a?(Vector)
+    raise "Direction must be a Vector!" unless direction.is_a?(Vector)
+
     @origin  = origin
     @direction = direction
 

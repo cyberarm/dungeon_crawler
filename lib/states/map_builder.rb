@@ -72,8 +72,17 @@ class MapBuilder < State
 
     @map.height.times do |y|
       @map.width.times do |x|
-        if @map.tiles[x][y].type == :wall
+        case @map.tiles[x][y].type
+        when :wall
           buffer+="#"
+        when :door_left_to_right
+          buffer+="-"
+        when :door_front_to_back
+          buffer+="|"
+        when :barrel
+          buffer+="B"
+        when :planter
+          buffer+="P"
         else
           buffer+=" "
         end
@@ -107,6 +116,8 @@ class MapBuilder < State
           tiles[x][y] = Map::Tile.new(:light, @map.floor_color)
         when "B"
           tiles[x][y] = Map::Tile.new(:barrel, @map.floor_color)
+        when "P"
+          tiles[x][y] = Map::Tile.new(:planter, @map.floor_color)
         else# FLOOR '-'
           tiles[x][y] = Map::Tile.new(:floor, @map.floor_color)
         end

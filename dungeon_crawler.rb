@@ -33,6 +33,7 @@ require_relative "lib/voxels/floor"
 require_relative "lib/voxels/door"
 
 require_relative "lib/things/barrel"
+require_relative "lib/things/planter"
 require_relative "lib/things/rising_door"
 require_relative "lib/things/sliding_door"
 
@@ -42,6 +43,9 @@ require_relative "lib/behaviors/sliding_door"
 
 require_relative "lib/level"
 require_relative "lib/level/mesh"
+
+require_relative "lib/positional_sound/listener"
+require_relative "lib/positional_sound/audio_source"
 
 GAME_ROOT_PATH = File.expand_path(File.dirname(__FILE__))
 

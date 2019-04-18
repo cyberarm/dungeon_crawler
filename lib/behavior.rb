@@ -21,7 +21,6 @@ class Behavior
     thing_is_collidable = @thing.collidable?
     @thing.collidable = false
 
-    can_move = false
     x_slot = @thing.map.grid.dig((@thing.position.x + normalized.x + (normalized.x * @min_wall_distance)).to_i, @thing.position.z.to_i)
     z_slot = @thing.map.grid.dig(@thing.position.x.to_i, (@thing.position.z + normalized.z + (normalized.z * @min_wall_distance)).to_i)
 
@@ -61,7 +60,7 @@ class Behavior
       @thing.position += nz * speed
     else
       puts "Failed to MOVE"
-      moved = false
+      false
     end
   end
 end

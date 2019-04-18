@@ -94,6 +94,7 @@ class Player
     ray = Ray.new(pos, @orientation.direction * -1)
     @map.collision_manager.entities.each do |ent|
       next if ent.entity == self
+      next unless ent.bounding_box
 
       if ray.intersect?(ent.bounding_box)
         puts "Looking at #{ent.entity.class}"
