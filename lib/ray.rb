@@ -12,8 +12,6 @@ class Ray
   def intersect?(intersectable)
     if intersectable.is_a?(BoundingBox)
       intersect_bounding_box?(intersectable)
-    # elsif intersectable.is_a?(Ray)
-      # intersect_ray?(intersectable)
     else
       raise NotImplementedError, "Ray intersection test for #{intersectable.class} not implemented."
     end
@@ -21,11 +19,14 @@ class Ray
 
   # Based on: https://tavianator.com/fast-branchless-raybounding-box-intersections/
   def intersect_bounding_box?(box)
+    tmin = -Float::INFINITY
+    tmax = Float::INFINITY
+
     tx1 = (box.min.x - @origin.x) * @inverse_direction.x
     tx2 = (box.max.x - @origin.x) * @inverse_direction.x
 
-    tmin = [tx1, tx2].min
-    tmax = [tx1, tx2].max
+    tmin = [tmin, [tx1, tx2].min].max
+    tmax = [tmax, [tx1, tx2].max].min
 
     ty1 = (box.min.y - @origin.y) * @inverse_direction.y
     ty2 = (box.max.y - @origin.y) * @inverse_direction.y
@@ -41,7 +42,4 @@ class Ray
 
     return tmax >= tmin;
   end
-
-  # def intersect_ray?(ray)
-  # end
 end
