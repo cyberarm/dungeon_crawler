@@ -4,7 +4,7 @@ class Map
   attr_reader :tiles, :grid, :width, :height, :position, :players, :things, :collision_manager,
               :tunnels, :max_length, :size, :max_tunnels, :current_direction,
               :current_walk_distance
-  def initialize(width:, height:, tunnels:, max_length:, size: 16)
+  def initialize(width:, height:, tunnels:, max_length:, size: 16, generate_things: true)
     @width, @height = width, height
     @tunnels, @max_length = tunnels, max_length
     @size = size
@@ -19,7 +19,7 @@ class Map
     @things  = []
     @collision_manager = CollisionManager.new(self)
 
-    @generated_things = false
+    @generate_things = generate_things
     @last_step_time = Gosu.milliseconds
     @time_between = 0
 
@@ -58,10 +58,10 @@ class Map
 
       @steps_per_update.times { walk }
 
-      if @tunnels <= 0 && !@generated_things
+      if @tunnels <= 0 && @generate_things
         place_things
         puts "Placed things!"
-        @generated_things = true
+        @generate_things = false
       end
     end
   end
@@ -122,7 +122,6 @@ class Map
 
           if can_place && rand(0.0..1.0) > 0.1
             @tiles[x][y].type = :barrel
-            @things << Barrel.new(self, x, y)
           end
         end
       end
@@ -146,7 +145,6 @@ class Map
 
           if can_place && rand(0.0..1.0) > 0.1
             @tiles[x][y].type = :door_left_to_right
-            @things << RisingDoor.new(self, x, y)
           end
         end
       end
@@ -170,7 +168,6 @@ class Map
 
           if can_place && rand(0.0..1.0) > 0.1
             @tiles[x][y].type = :planter
-            @things << Planter.new(self, x, y)
           end
         end
       end

@@ -6,6 +6,7 @@ class Thing < Entity
   attr_reader :map, :options, :bounding_box
   attr_accessor :drawable, :position, :orientation
   def initialize(map, x, y, options = {})
+    raise unless map.is_a?(Map)
     # X -> Roll
     # Y -> Yaw
     # Z -> Pitch

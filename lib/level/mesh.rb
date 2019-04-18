@@ -38,12 +38,16 @@ class Level
         slot.voxel = Wall.new(@map, x, y)
       when :door_left_to_right
         slot.voxel = Door.new(@map, x, y, form: :left_to_right)
+        @map.things << RisingDoor.new(@map, x, y, form: :left_to_right)
       when :door_front_to_back
         slot.voxel = Door.new(@map, x, y, form: :front_to_back)
+        @map.things << RisingDoor.new(@map, x, y, form: :front_to_back)
       when :barrel
         slot.voxel = Floor.new(@map, x, y)
+        @map.things << Barrel.new(@map, x, y)
       when :planter
         slot.voxel = Floor.new(@map, x, y)
+        @map.things << Planter.new(@map, x, y)
       else# :floor
         slot.voxel = Floor.new(@map, x, y)
       end

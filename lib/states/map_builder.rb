@@ -130,7 +130,7 @@ class MapBuilder < State
       width = line.strip.length
     end
 
-    @map = Map.new(width: width, height: y, tunnels: 0, max_length: 0, size: 16.0)
+    @map = Map.new(width: width, height: y, tunnels: 0, max_length: 0, size: 16.0, generate_things: false)
     tiles.each do |_x, hash|
       hash.each do |_y, tile|
         @map.tiles[_x] ||= {}
