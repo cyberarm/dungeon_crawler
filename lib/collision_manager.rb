@@ -84,6 +84,7 @@ class CollisionManager
 
     @entities.each do |entity|
       next if entity.entity == thing
+      next unless entity.entity.collidable?
 
       if thing.bounding_box.transpose(thing.position + (direction * speed)).intersect?(entity.bounding_box)
         permitted_movement[:x] = !thing.bounding_box.transpose(thing.position + (nx * speed)).intersect?(entity.bounding_box)

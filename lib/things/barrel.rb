@@ -1,6 +1,6 @@
 class Barrel < Thing
   def construct!
-    @collidable = false
+    @collidable = true
   end
 
   def setup
