@@ -7,6 +7,8 @@ class CollisionManager
     @map = map
     @collisions = []
     @entities = []
+
+    @min_wall_distance = 0.2
   end
 
   def update
@@ -39,10 +41,48 @@ class CollisionManager
   end
 
   def handle_collisions
-    puts "#{@collisions.count} collisions detected!" if @collisions.size > 0
-    @collisions.each do |collision|
-      puts "#{collision.ent_a.entity.class}|#{collision.ent_a.entity.object_id} collided with #{collision.ent_b.entity.class}|#{collision.ent_b.entity.object_id}"
+    if @collisions.size > 0
+      puts "#{@collisions.count} collisions detected!"
+
+      @collisions.each do |collision|
+        puts "#{collision.ent_a.entity.class}|#{collision.ent_a.entity.object_id} collided with #{collision.ent_b.entity.class}|#{collision.ent_b.entity.object_id}"
+      end
+
+      puts
     end
-    puts if @collisions.size > 0
+  end
+
+  # returns an array of entities the ray collides with
+  def ray_intersect(ray)
+    @entities.select do |ent|
+      next if ent.entity == self
+      next unless ent.bounding_box
+
+      ray.intersect?(ent.bounding_box)
+    end
+  end
+
+  def move_thing(thing, speed, direction)
+    speed = speed * Window.instance.delta
+    moved = true
+
+    x_slot = @map.grid.dig((thing.position.x + direction.x * speed + (direction.x * @min_wall_distance)).to_i, thing.position.z.to_i)
+    z_slot = @map.grid.dig(thing.position.x.to_i, (thing.position.z + direction.z * speed + (direction.z * @min_wall_distance)).to_i)
+
+    nx = Vector.new(direction.x)
+    ny = Vector.new(0, direction.y, 0)
+    nz = Vector.new(0, 0, direction.z)
+
+    if (x_slot && !x_slot.collidable?) && (z_slot && !z_slot.collidable?)
+      thing.position += (nx + nz) * speed
+    elsif (x_slot && !x_slot.collidable?)
+      thing.position += nx * speed
+    elsif (z_slot && !z_slot.collidable?)
+      thing.position += nz * speed
+    else
+      moved = false
+    end
+
+    return moved
   end
 end

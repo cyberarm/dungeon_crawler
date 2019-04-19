@@ -120,7 +120,7 @@ class Map
             can_place = false if thing.position.gl_distance2d(Vector.new(x, 0, y)) < 2.0
           end
 
-          if can_place && rand(0.0..1.0) > 0.1
+          if can_place && rand(0.0..1.0) <= 0.10
             @tiles[x][y].type = :barrel
           end
         end
@@ -143,7 +143,7 @@ class Map
             can_place = false if thing.position.gl_distance2d(Vector.new(x, 0, y)) < 2.0
           end
 
-          if can_place && rand(0.0..1.0) > 0.1
+          if can_place && rand(0.0..1.0) < 0.10
             @tiles[x][y].type = :door_left_to_right
           end
         end
@@ -166,7 +166,7 @@ class Map
             can_place = false if thing.position.gl_distance2d(Vector.new(x, 0, y)) < 2.0
           end
 
-          if can_place && rand(0.0..1.0) > 0.1
+          if can_place && rand(0.0..1.0) <= 0.10
             @tiles[x][y].type = :planter
           end
         end
@@ -194,8 +194,14 @@ class Map
   # Used for placing Things when map is created
   def tile_neighbors(x, y)
     list = {}
-    list[:left]  = { tile: @tiles.dig(x - 1, y), x: x - 1, y: y } # LEFT
-    list[:right] = { tile: @tiles.dig(x + 1, y), x: x + 1, y: y } # RIGHT
+    list[:left]       = { tile: @tiles.dig(x - 1, y), x: x - 1, y: y } # LEFT
+    list[:left_front] = { tile: @tiles.dig(x - 1, y - 1), x: x - 1, y: y - 1 } # LEFT FONT
+    list[:left_back]  = { tile: @tiles.dig(x - 1, y + 1), x: x - 1, y: y + 1 } # LEFT BACK
+
+    list[:right]       = { tile: @tiles.dig(x + 1, y), x: x + 1, y: y } # RIGHT
+    list[:right_front] = { tile: @tiles.dig(x + 1, y - 1), x: x + 1, y: y - 1 } # RIGHT FRONT
+    list[:right_back]  = { tile: @tiles.dig(x + 1, y + 1), x: x + 1, y: y + 1 } # RIGHT BACK
+
     list[:front] = { tile: @tiles.dig(x, y - 1), x: x,     y: y - 1 } # FRONT
     list[:back]  = { tile: @tiles.dig(x, y + 1), x: x,     y: y + 1 } # BACK
 

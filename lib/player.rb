@@ -82,8 +82,8 @@ class Player
 
   def update
     # Use vector math to prevent diagonal speed increase
-    normalized = @new_position.normalized
-    moved = move(normalized)
+    direction = @new_position.normalized
+    moved = @map.collision_manager.move_thing(self, @speed, direction)
 
     bob_head if moved && @new_position.magnitude.abs > 0.001
     mouse_look
@@ -92,13 +92,10 @@ class Player
     pos = @position.clone
     pos.y += @head_height.abs # Move ray to head level
     ray = Ray.new(pos, @orientation.direction * -1)
-    @map.collision_manager.entities.each do |ent|
-      next if ent.entity == self
-      next unless ent.bounding_box
 
-      if ray.intersect?(ent.bounding_box)
-        puts "Looking at #{ent.entity.class}"
-      end
+    @map.collision_manager.ray_intersect(ray).each do |e|
+      next if e.entity == self
+      puts "Looking at #{e.entity.class}"
     end
   end
 
@@ -147,27 +144,6 @@ class Player
   def grid_position
     # return position in grid space of x and y, not in opengl space of x and z.
     Vector.new(@position.x.to_i, @position.z.to_i)
-  end
-
-  def move(normalized)
-    moved = true
-    x_slot = @map.grid.dig((@position.x + normalized.x * speed + (normalized.x * @min_wall_distance)).to_i, @position.z.to_i)
-    z_slot = @map.grid.dig(@position.x.to_i, (@position.z + normalized.z * speed + (normalized.z * @min_wall_distance)).to_i)
-
-    nx = Vector.new(normalized.x)
-    nz = Vector.new(0, 0, normalized.z)
-
-    if (x_slot && !x_slot.collidable?) && (z_slot && !z_slot.collidable?)
-      @position += (nx + nz) * speed
-    elsif (x_slot && !x_slot.collidable?)
-      @position += nx * speed
-    elsif (z_slot && !z_slot.collidable?)
-      @position += nz * speed
-    else
-      moved = false
-    end
-
-    return moved
   end
 
   def bob_head

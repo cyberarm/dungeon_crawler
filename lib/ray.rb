@@ -25,21 +25,29 @@ class Ray
     tx1 = (box.min.x - @origin.x) * @inverse_direction.x
     tx2 = (box.max.x - @origin.x) * @inverse_direction.x
 
-    tmin = [tmin, [tx1, tx2].min].max
-    tmax = [tmax, [tx1, tx2].max].min
+    tmin = max(tmin, min(tx1, tx2))
+    tmax = min(tmax, max(tx1, tx2))
 
     ty1 = (box.min.y - @origin.y) * @inverse_direction.y
     ty2 = (box.max.y - @origin.y) * @inverse_direction.y
 
-    tmin = [tmin, [ty1, ty2].min].max
-    tmax = [tmax, [ty1, ty2].max].min
+    tmin = max(tmin, min(ty1, ty2))
+    tmax = min(tmax, max(ty1, ty2))
 
     tz1 = (box.min.z - @origin.z) * @inverse_direction.z
     tz2 = (box.max.z - @origin.z) * @inverse_direction.z
 
-    tmin = [tmin, [tz1, tz2].min].max
-    tmax = [tmax, [tz1, tz2].max].min
+    tmin = max(tmin, min(tz1, tz2))
+    tmax = min(tmax, max(tz1, tz2))
 
-    return tmax >= tmin;
+    return tmax >= max(tmin, 0.0);
+  end
+
+  def min(x, y)
+    ((x) < (y) ? (x) : (y))
+  end
+
+  def max(x, y)
+    ((x) > (y) ? (x) : (y))
   end
 end
