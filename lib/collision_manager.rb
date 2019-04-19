@@ -64,7 +64,6 @@ class CollisionManager
 
   def move_thing(thing, speed, direction)
     speed = speed * Window.instance.delta
-    moved = true
 
     x_slot = @map.grid.dig((thing.position.x + direction.x * speed + (direction.x * @min_wall_distance)).to_i, thing.position.z.to_i)
     z_slot = @map.grid.dig(thing.position.x.to_i, (thing.position.z + direction.z * speed + (direction.z * @min_wall_distance)).to_i)
@@ -73,16 +72,32 @@ class CollisionManager
     ny = Vector.new(0, direction.y, 0)
     nz = Vector.new(0, 0, direction.z)
 
+    permitted_movement = {x: false, y: false, z: false}
+
     if (x_slot && !x_slot.collidable?) && (z_slot && !z_slot.collidable?)
-      thing.position += (nx + nz) * speed
+      permitted_movement.keys.each {|k| permitted_movement[k] = true}
     elsif (x_slot && !x_slot.collidable?)
-      thing.position += nx * speed
+      permitted_movement[:x] = true
     elsif (z_slot && !z_slot.collidable?)
-      thing.position += nz * speed
-    else
-      moved = false
+      permitted_movement[:z] = true
     end
 
-    return moved
+    @entities.each do |entity|
+      next if entity.entity == thing
+
+      if thing.bounding_box.transpose(thing.position + (direction * speed)).intersect?(entity.bounding_box)
+        permitted_movement[:x] = !thing.bounding_box.transpose(thing.position + (nx * speed)).intersect?(entity.bounding_box)
+        permitted_movement[:y] = !thing.bounding_box.transpose(thing.position + (ny * speed)).intersect?(entity.bounding_box)
+        permitted_movement[:z] = !thing.bounding_box.transpose(thing.position + (nz * speed)).intersect?(entity.bounding_box)
+      end
+    end
+
+    permitted_movement.each do |axis, allowed|
+      thing.position += nx * speed if axis == :x && allowed
+      thing.position += ny * speed if axis == :y && allowed
+      thing.position += nz * speed if axis == :z && allowed
+    end
+
+    return permitted_movement.values.any?(true)
   end
 end
