@@ -2,7 +2,7 @@ class Player
   include OpenGL
   include GLU
 
-  attr_accessor :position, :orientation
+  attr_accessor :position, :orientation, :collidable
   attr_reader :bounding_box
   def initialize(options = {})
     @options = options
@@ -19,6 +19,8 @@ class Player
 
     @orientation = Vector.new(0, 0, 0)
     @bounding_box = BoundingBox.new(Vector.new(-0.1, 0, -0.1), Vector.new(0.1, @head_height.abs, 0.1))
+
+    @collidable = true
 
     @strafe_tilt = 0.1
     @turn_speed = 50.0
@@ -97,6 +99,10 @@ class Player
       next if e.entity == self
       puts "Looking at #{e.entity.class}"
     end
+  end
+
+  def collidable?
+    @collidable
   end
 
   def speed

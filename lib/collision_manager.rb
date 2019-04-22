@@ -62,9 +62,7 @@ class CollisionManager
     end
   end
 
-  def move_thing(thing, speed, direction)
-    speed = speed * Window.instance.delta
-
+  def can_move_thing?(thing, speed, direction)
     x_slot = @map.grid.dig((thing.position.x + direction.x * speed + (direction.x * @min_wall_distance)).to_i, thing.position.z.to_i)
     z_slot = @map.grid.dig(thing.position.x.to_i, (thing.position.z + direction.z * speed + (direction.z * @min_wall_distance)).to_i)
 
@@ -93,12 +91,22 @@ class CollisionManager
       end
     end
 
+    return permitted_movement
+  end
+
+  def move_thing(thing, speed, direction)
+    speed = speed * Window.instance.delta
+
+    permitted_movement = can_move_thing?(thing, speed, direction)
+
+    nx = Vector.new(direction.x)
+    ny = Vector.new(0, direction.y, 0)
+    nz = Vector.new(0, 0, direction.z)
+
     permitted_movement.each do |axis, allowed|
       thing.position += nx * speed if axis == :x && allowed
       thing.position += ny * speed if axis == :y && allowed
       thing.position += nz * speed if axis == :z && allowed
     end
-
-    return permitted_movement.values.any?(true)
   end
 end

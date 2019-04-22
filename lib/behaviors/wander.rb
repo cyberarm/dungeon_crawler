@@ -17,7 +17,7 @@ class WanderBehavior < Behavior
       @last_pos = @thing.position.clone
 
       if true#facing?(@goal)
-        move_towards(@direction, @speed * Window.instance.delta)
+        move_towards(@direction, @speed)
       else
         turn_towards(@goal)
       end

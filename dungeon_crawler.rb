@@ -54,7 +54,7 @@ class Window < Gosu::Window
   include GLU
 
   def initialize
-    super(1280, 600, false)
+    super(1280, 600, fullscreen: false, resizable: false)
     # super(Gosu.screen_width, Gosu.screen_height, true)
     Window.instance = self
 
