@@ -3,7 +3,7 @@ class Map
 
   attr_reader :tiles, :grid, :width, :height, :position, :players, :things, :collision_manager,
               :tunnels, :max_length, :size, :max_tunnels, :current_direction,
-              :current_walk_distance
+              :current_walk_distance, :positional_audio
   def initialize(width:, height:, tunnels:, max_length:, size: 16, generate_things: true)
     @width, @height = width, height
     @tunnels, @max_length = tunnels, max_length
@@ -18,6 +18,7 @@ class Map
     @players = []
     @things  = []
     @collision_manager = CollisionManager.new(self)
+    @positional_audio = PositionalAudio::Listener.new(position: Vector.new)
 
     @generate_things = generate_things
     @last_step_time = Gosu.milliseconds
@@ -53,17 +54,20 @@ class Map
   end
 
   def update
-    if Gosu.milliseconds >= @last_step_time + @time_between
-      @last_step_time = Gosu.milliseconds
+    if @generate_things
+      if Gosu.milliseconds >= @last_step_time + @time_between
+        @last_step_time = Gosu.milliseconds
 
-      @steps_per_update.times { walk }
+        @steps_per_update.times { walk }
 
-      if @tunnels <= 0 && @generate_things
-        place_things
-        puts "Placed things!"
-        @generate_things = false
+        if @tunnels <= 0 && @generate_things
+          place_things
+          @generate_things = false
+        end
       end
     end
+
+    @positional_audio.update
   end
 
   def walk

@@ -104,8 +104,9 @@ class Vector
   end
 
   # returns degrees
-  def angle(other)
-    Math.acos( self.normalized.dot(other.normalized) ) * 180 / Math::PI
+  def angle(other, percision = 8)
+    _dot = self.normalized.dot(other.normalized).round(percision)
+    Math.acos( _dot ) * 180 / Math::PI
   end
 
   # returns magnitude of Vector, ignoring #weight

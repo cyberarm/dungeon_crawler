@@ -21,6 +21,7 @@ class MapPlayer < State
     @level  = Level.new(map: @map, window: @window)
 
     @font = Gosu::Font.new(28)
+    @map.positional_audio.entity = @player
   end
 
   def draw
@@ -72,6 +73,7 @@ class MapPlayer < State
     end
 
     @player.update
+    @map.update
     @level.update
   end
 

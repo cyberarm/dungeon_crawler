@@ -33,8 +33,8 @@ void main() {
     // "var_Color" contains intensity values so multiplying by the
     //             texture color gives us the desired intesity
     if (var_NoTexture != 1.0) {
-      gl_FragColor = (var_Color * vec4(color, 0.0)) * lightCurve();
+      gl_FragColor = (var_Color * vec4(color, 0.0));// * lightCurve();
     } else {
-      gl_FragColor = var_Color * lightCurve();
+      gl_FragColor = var_Color;// * lightCurve();
     }
 }

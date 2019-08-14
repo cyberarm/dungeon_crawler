@@ -38,6 +38,10 @@ class Player
 
     @sky = Gosu::Color::BLACK
     @gl_sky = GLColor.new(@sky.red / 255.0, @sky.green / 255.0, @sky.blue / 255.0, @sky.alpha / 255.0)
+
+    # audio
+    @footstep_sound = PositionalAudio::AudioSource.new(sound: GAME_ROOT_PATH + "/assets/sounds/footstep.wav", max_volume: 0.25, entity: self)
+    @footstep_interval = 750 # 4 footstep sounds per second
   end
 
   def camera
@@ -101,6 +105,10 @@ class Player
     end
   end
 
+  def play_footstep
+    (Gosu.milliseconds - @footstep_sound.started_playing_at) >= @footstep_interval
+  end
+
   def collidable?
     @collidable
   end
@@ -114,16 +122,22 @@ class Player
   end
 
   def forward
+    @map.positional_audio.add_source(@footstep_sound) if play_footstep
+
     @new_position.z -= Math.cos((@orientation.y).degrees_to_radians) * speed
     @new_position.x += Math.sin((@orientation.y).degrees_to_radians) * speed
   end
 
   def backward
+    @map.positional_audio.add_source(@footstep_sound) if play_footstep
+
     @new_position.z += Math.cos((@orientation.y).degrees_to_radians) * speed
     @new_position.x -= Math.sin((@orientation.y).degrees_to_radians) * speed
   end
 
   def strafe_left
+    @map.positional_audio.add_source(@footstep_sound) if play_footstep
+
     @new_position.z -= Math.sin((@orientation.y).degrees_to_radians) * speed
     @new_position.x -= Math.cos((@orientation.y).degrees_to_radians) * speed
 
@@ -131,6 +145,8 @@ class Player
   end
 
   def strafe_right
+    @map.positional_audio.add_source(@footstep_sound) if play_footstep
+
     @new_position.z += Math.sin((@orientation.y).degrees_to_radians) * speed
     @new_position.x += Math.cos((@orientation.y).degrees_to_radians) * speed
 

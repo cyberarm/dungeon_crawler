@@ -1,34 +1,40 @@
 class PositionalAudio
   class AudioSource
-    attr_reader :sound, :channel
+    attr_reader :sound, :channel, :started_playing_at
     attr_accessor :volume, :speed, :pan
-    attr_accessor :follow
-    def setup
+    attr_accessor :entity, :position
+
+    def initialize(sound:, max_volume: 1.0, volume: 1.0, speed: 1.0, pan: 0.0, entity: nil, position: nil)
       @channel = nil
-      @sound = Gosu::Sample.new(@options[:sound])
+      @sound = Gosu::Sample.new(sound)
 
-      @volume= 1.0
-      @speed = 1.0
-      @pan   = 0.0
+      @max_volume = max_volume
 
-      @follow = nil
+      @volume= volume
+      @speed = speed
+      @pan   = pan
+
+      @entity = entity
+      @position = position
+
+      @started_playing_at = Gosu.milliseconds
+
+      raise ArgumentError, "position or entity must be provided" if entity.nil? && position.nil?
     end
 
     def update
-      @angle %= 359
-      if @follow == :mouse
-        @x, @y = $window.mouse_x + @size * 0.25, $window.mouse_y + @size * 0.25
-      end
+      @position = entity.position if @entity
 
       if @channel
-        @channel.volume = @volume
+        @channel.volume = @volume.clamp(0.0, @max_volume)
         @channel.speed  = @speed
         @channel.pan    = @pan
       end
     end
 
     def play
-      @channel = @sound.play(@volume, @speed, true)
+      @started_playing_at = Gosu.milliseconds
+      @channel = @sound.play(@volume, @speed, false)
     end
 
     def playing?
