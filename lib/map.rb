@@ -134,9 +134,41 @@ class Map
         if tile = tiles.dig(x, y)
           next unless tile.type == :floor
 
-          can_place = true
-          tile_neighbors(x, y).each do |dir, side|
-            can_place = false unless side[:tile].type == :floor
+          can_place = false
+          door_type = :door_left_to_right
+          # |
+          if  tiles.dig(x - 1, y)&.type == :wall && # left
+              tiles.dig(x + 1, y)&.type == :wall && # right
+
+              tiles.dig(x, y - 1)&.type == :floor && # up
+              tiles.dig(x, y + 1)&.type == :floor && # down
+
+              tiles.dig(x - 1, y - 1)&.type == :wall && # left, up
+              tiles.dig(x + 1, y - 1)&.type == :wall && # right, up
+
+              tiles.dig(x - 1, y + 1)&.type == :wall && # left, down
+              tiles.dig(x + 1, y + 1)&.type == :wall    # right, down
+
+            can_place = true
+            door_type = :door_left_to_right
+          end
+
+          # -
+          if  !can_place &&
+              tiles.dig(x - 1, y)&.type == :floor && # left
+              tiles.dig(x + 1, y)&.type == :floor && # right
+
+              tiles.dig(x, y - 1)&.type == :wall && # up
+              tiles.dig(x, y + 1)&.type == :wall && # down
+
+              tiles.dig(x - 1, y - 1)&.type == :wall && # left, up
+              tiles.dig(x + 1, y - 1)&.type == :wall && # right, up
+
+              tiles.dig(x - 1, y + 1)&.type == :wall && # left, down
+              tiles.dig(x + 1, y + 1)&.type == :wall    # right, down
+
+            can_place = true
+            door_type = :door_back_to_front
           end
 
           @things.each do |thing|
@@ -144,7 +176,7 @@ class Map
           end
 
           if can_place && rand(0.0..1.0) < 0.10
-            @tiles[x][y].type = :door_left_to_right
+            @tiles[x][y].type = door_type
           end
         end
       end
