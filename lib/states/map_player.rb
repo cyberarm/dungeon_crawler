@@ -22,6 +22,16 @@ class MapPlayer < State
 
     @font = Gosu::Font.new(28)
     @map.positional_audio.entity = @player
+
+    @options[:server_host] = "localhost"
+    @options[:server_port] = 56789
+    @network_server = Network::Server.new
+    @network_server.run_in_background do |server|
+      server.broadcast(:heartbeat, true, "#{server.time}")
+    end
+
+    @network_client = Network::Client.new(@options[:server_host], @options[:server_port])
+    @network_client.run
   end
 
   def draw
