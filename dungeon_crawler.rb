@@ -2,6 +2,8 @@ require "gosu"
 require "opengl"
 require "glu"
 
+require "socket"
+
 require_relative "lib/opengl_lib"
 require_relative "lib/shaders/shader"
 require_relative "lib/vector"

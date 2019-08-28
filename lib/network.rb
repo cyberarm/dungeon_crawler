@@ -1,5 +1,5 @@
 class Network
-  Data = Struct.new(:socket, :sequence_id, :read_queue, :write_queue)
+  Data = Struct.new(:socket, :client_sequence_id, :server_sequence_id, :read_queue, :write_queue)
 
   Packet = Struct.new(:sequence_id, :reliable, :type, :message)
   PacketTypes = {
@@ -35,8 +35,8 @@ class Network
     header = parts.first.split(":")
 
     packet.sequence_id = Integer(header.first)
-    packet.reliable = (header[1]) == 1 ? true : false
-    packet.type = Integer(header.last)
+    packet.reliable    = Integer(header[1]) == 1
+    packet.type        = Network::PacketTypes.dig( Integer(header.last) )
 
     packet.message = parts.size == 1 ? "" : parts.last
 
@@ -55,20 +55,36 @@ class Network
     packet = Network.packet_from_socket(client.socket.gets)
     return unless packet
 
-    client.read_queue << packet
+    # puts "#{client.send(network_object.is_a?(Server) ? :client_sequence_id : :server_sequence_id)} vs. #{packet.sequence_id} -> #{network_object.class}"
+    if client.send(network_object.is_a?(Server) ? :client_sequence_id : :server_sequence_id) >= packet.sequence_id
+      client.read_queue << packet
 
-    if packet.reliable
-      _packet = client.write_queue.detect { |pkt| pkt.sequence_id == Integer(packet.message)}
-      client.write_queue.delete(_packet)
-      network_object.transmit(client, :acknowledge, true, packet.sequence_id)
+
+      if packet.reliable
+        if :acknowledge == packet.type
+          _packet = client.write_queue.detect { |pkt| pkt.sequence_id == Integer(packet.message) }
+          if _packet
+            puts "Got ACK for #{_packet.sequence_id}"
+            client.write_queue.delete(_packet)
+          end
+
+        else
+          pp "Sending ACK for #{packet.sequence_id}"
+          network_object.transmit(client, :acknowledge, true, packet.sequence_id)
+        end
+      end
+    else
+      puts "rejected: #{packet} (-> #{network_object.class})"
     end
   end
 
   def self.handle_write(client)
     client.write_queue.each do |packet|
+      # "(int) sequence_id:(boolean) reliable:(int) type|(string) message"
       client.socket.puts("#{packet.sequence_id}:#{packet.reliable}:#{packet.type}|#{packet.message}")
 
-      client.write_queue.delete(packet) unless packet.reliable
+      reliable = packet.reliable == 1
+      client.write_queue.delete(packet) unless reliable
     end
   end
 end

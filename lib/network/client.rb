@@ -1,12 +1,9 @@
 class Network
   class Client
 
-    attr_reader :sequence_id
     def initialize(remote_host, port)
       @socket = TCPSocket.new(remote_host, port)
-      @client = Data.new(@socket, 0, [], [])
-      @sequence_id = 0
-
+      @server = Data.new(@socket, 0, 0, [], [])
 
       @connected = true
     end
@@ -33,18 +30,32 @@ class Network
 
     def handle_read
       # p :client
-      Network.handle_read(@client, self)
+      Network.handle_read(@server, self)
+
+      @server.read_queue.each do |packet|
+        if packet.sequence_id == @server.server_sequence_id
+          @server.server_sequence_id += 1
+          @server.read_queue.delete(packet)
+
+          puts "accepted packet: #{packet} (-> #{self.class})"
+          process_packet(packet)
+        end
+      end
+    end
+
+    def process_packet(packet)
+      # TODO: Client stuff :D
     end
 
     def handle_write
-      Network.handle_write(@client)
+      Network.handle_write(@server)
     end
 
     def transmit(client, type, reliable, message)
-      packet = Network.create_packet(@sequence_id, reliable, type, message)
+      packet = Network.create_packet(@server.client_sequence_id, reliable, type, message)
 
-      @sequence_id += 1
-      @client.write_queue << packet
+      @server.client_sequence_id += 1
+      @server.write_queue << packet
     end
   end
 end

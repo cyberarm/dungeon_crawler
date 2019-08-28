@@ -1,5 +1,3 @@
-require "socket"
-
 class Network
   class Server
     attr_reader :clients
@@ -10,7 +8,6 @@ class Network
       @tick_rate   = tick_rate
 
       @socket = TCPServer.new(@host, @port)
-      @sequence_id = 0
       @serve  = false
 
       @clients = []
@@ -54,7 +51,7 @@ class Network
     end
 
     def handle(socket)
-      client = Data.new(socket, 0, [], [])
+      client = Data.new(socket, 0, 0, [], [])
       @clients << client
       Thread.start do
         while(@serve)
@@ -74,16 +71,30 @@ class Network
     def handle_read(client)
       # p :server
       Network.handle_read(client, self)
+
+      client.read_queue.each do |packet|
+        if packet.sequence_id == client.client_sequence_id
+          client.client_sequence_id += 1
+          client.read_queue.delete(packet)
+
+          puts "accepted packet: #{packet} (-> #{self.class})"
+          process_packet(client, packet)
+        end
+      end
     end
 
     def handle_write(client)
       Network.handle_write(client)
     end
 
-    def transmit(client, type, reliable, message)
-      packet = Network.create_packet(@sequence_id, reliable, type, message)
+    def process_packet(client, packet)
+      # TODO: server stuff here :)
+    end
 
-      @sequence_id += 1
+    def transmit(client, type, reliable, message)
+      packet = Network.create_packet(client.server_sequence_id, reliable, type, message)
+
+      client.server_sequence_id += 1
       client.write_queue << packet
     end
 
