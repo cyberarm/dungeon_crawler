@@ -29,7 +29,6 @@ class Network
     end
 
     def handle_read
-      # p :client
       Network.handle_read(@server, self)
 
       @server.read_queue.each do |packet|
@@ -37,7 +36,7 @@ class Network
           @server.server_sequence_id += 1
           @server.read_queue.delete(packet)
 
-          puts "accepted packet: #{packet} (-> #{self.class})"
+          puts "accepted packet: #{packet} (↓ #{self.class})"
           process_packet(packet)
         end
       end
@@ -48,7 +47,7 @@ class Network
     end
 
     def handle_write
-      Network.handle_write(@server)
+      Network.handle_write(@server, self)
     end
 
     def transmit(client, type, reliable, message)

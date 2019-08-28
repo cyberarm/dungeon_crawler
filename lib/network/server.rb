@@ -12,12 +12,8 @@ class Network
 
       @clients = []
 
-      @last_tick_time = time
+      @last_tick_time = Network.time
       @tick_interval  = 1000.0 / @tick_rate
-    end
-
-    def time
-      Process.clock_gettime(Process::CLOCK_MONOTONIC) * 1000.0
     end
 
     def run(&block)
@@ -43,8 +39,8 @@ class Network
     end
 
     def simulate(&block)
-      if (time - @last_tick_time) >= @tick_interval
-        @last_tick_time = time
+      if (Network.time - @last_tick_time) >= @tick_interval
+        @last_tick_time = Network.time
 
         block.call(self) if block
       end
@@ -69,7 +65,6 @@ class Network
     end
 
     def handle_read(client)
-      # p :server
       Network.handle_read(client, self)
 
       client.read_queue.each do |packet|
@@ -77,18 +72,20 @@ class Network
           client.client_sequence_id += 1
           client.read_queue.delete(packet)
 
-          puts "accepted packet: #{packet} (-> #{self.class})"
+          puts "accepted packet: #{packet} (↓ #{self.class})" # ↑
           process_packet(client, packet)
         end
       end
     end
 
     def handle_write(client)
-      Network.handle_write(client)
+      Network.handle_write(client, self)
     end
 
     def process_packet(client, packet)
       # TODO: server stuff here :)
+
+      transmit(client, :receive_map, true, "##-##")
     end
 
     def transmit(client, type, reliable, message)
