@@ -1,13 +1,21 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    gosu (9.9.9)
+    concurrent-ruby (1.1.5)
+    gameoverseer (0.1.8)
+      concurrent-ruby
+      multi_json
+      renet (~> 0.2, >= 0.2.2)
+    gosu (0.14.5)
+    multi_json (1.13.1)
     opengl-bindings (1.6.9)
+    renet (0.2.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  gameoverseer
   gosu
   opengl-bindings
 

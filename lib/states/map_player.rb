@@ -25,13 +25,11 @@ class MapPlayer < State
 
     @options[:server_host] = "localhost"
     @options[:server_port] = 56789
-    # @network_server = Network::Server.new
-    # @network_server.run_in_background do |server|
-    #   server.broadcast(:heartbeat, true, "#{Network.time}")
-    # end
+    @network_server = Network::Server.new(@options[:server_host], @options[:server_port])
+    @network_server.start
 
-    # @network_client = Network::Client.new(@options[:server_host], @options[:server_port])
-    # @network_client.run
+    @network_client = Network::Client.new(@options[:server_host], @options[:server_port])
+    @network_client.connect
   end
 
   def draw
@@ -85,6 +83,9 @@ class MapPlayer < State
     @player.update
     @map.update
     @level.update
+
+    @network_client.transmit("game", "join", {username: "CYBERARM"})
+    @network_client.update(0)
   end
 
   def button_down(id)

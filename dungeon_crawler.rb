@@ -2,7 +2,8 @@ require "gosu"
 require "opengl"
 require "glu"
 
-require "socket"
+require "json"
+require "securerandom"
 
 require_relative "lib/opengl_lib"
 require_relative "lib/shaders/shader"
@@ -49,7 +50,6 @@ require_relative "lib/level/mesh"
 require_relative "lib/positional_sound/listener"
 require_relative "lib/positional_sound/audio_source"
 
-require_relative "lib/network"
 require_relative "lib/network/server"
 require_relative "lib/network/client"
 
