@@ -22,6 +22,8 @@ class MapPlayer < State
 
     @font = Gosu::Font.new(28)
     @map.positional_audio.entity = @player
+    @minimap_scale = 0.5
+    @minimap_size = 128
 
     @options[:server_host] = "localhost"
     @options[:server_port] = 56789
@@ -47,29 +49,41 @@ class MapPlayer < State
     @font.draw_text(
       "FPS: #{Gosu.fps}\nPlayer X: #{@player.position.x.round(1)}, Y: #{@player.position.y.round(1)}, Z: #{@player.position.z.round(1)}\nPlayer Roll: #{@player.orientation.x.round(1)}, Yaw: #{@player.orientation.y.round(1)}, Pitch: #{@player.orientation.z.round(1)}", 10, 10, 10)
 
-    Gosu.translate(@window.width - (@map.width * @map.size) * 0.3, 0) do
-      Gosu.scale(0.3, 0.3) do
-        Gosu.draw_rect(
-          -2, -2,
-          @map.width * @map.size + 4, @map.height * @map.size + 8,
-          Gosu::Color::BLACK
-        )
-        @map.draw
-        Gosu.draw_rect(
-          @player.position.x * @map.size, @player.position.z * @map.size,
-          @map.size, @map.size,
-          Gosu::Color::RED
-        )
-        Gosu.rotate(@player.orientation.y, @player.position.x * @map.size + @map.size/2, @player.position.z * @map.size + @map.size/2) do
-          Gosu.draw_line(
-            @player.position.x * @map.size + @map.size/2,
-            @player.position.z * @map.size, Gosu::Color::GREEN,
-            @player.position.x * @map.size + @map.size/2,
-            @player.position.z * @map.size - @map.size, Gosu::Color::GREEN
-          )
+    minimap = Gosu.render(@minimap_size, @minimap_size) do
+      # BACKGROUND
+      Gosu.draw_rect(
+        0, 0,
+        @minimap_size, @minimap_size,
+        Gosu::Color::BLACK
+      )
+
+      Gosu.scale(@minimap_scale, @minimap_scale) do
+        Gosu.rotate(@player.orientation.y, @minimap_size, @minimap_size) do
+          Gosu.translate(-(@player.position.x * @map.size) + @minimap_size, -(@player.position.z * @map.size) + @minimap_size) do
+            @map.draw
+
+            # PLAYER
+            Gosu.draw_rect(
+              @player.position.x * @map.size, @player.position.z * @map.size,
+              @map.size, @map.size,
+              Gosu::Color::RED
+            )
+
+            Gosu.rotate(@player.orientation.y, @player.position.x * @map.size + @map.size/2, @player.position.z * @map.size + @map.size/2) do
+              # PLAYER DIRECTION
+              Gosu.draw_line(
+                @player.position.x * @map.size + @map.size / 2,
+                @player.position.z * @map.size, Gosu::Color::GREEN,
+                @player.position.x * @map.size + @map.size / 2,
+                @player.position.z * @map.size - @map.size, Gosu::Color::GREEN
+              )
+            end
+          end
         end
       end
     end
+
+    minimap.draw(@window.width  - minimap.width, 0, 0)
   end
 
   def update
