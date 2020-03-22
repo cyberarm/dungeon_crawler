@@ -23,7 +23,8 @@ class MapPlayer < State
     @font = Gosu::Font.new(28)
     @map.positional_audio.entity = @player
     @minimap_scale = 0.5
-    @minimap_size = 128
+    @minimap_size = 192
+    @minimap_rotates = false
 
     @options[:server_host] = "localhost"
     @options[:server_port] = 56789
@@ -54,12 +55,12 @@ class MapPlayer < State
       Gosu.draw_rect(
         0, 0,
         @minimap_size, @minimap_size,
-        Gosu::Color::BLACK
+        Gosu::Color.rgba(0, 0, 0, 200)
       )
 
-      Gosu.scale(@minimap_scale, @minimap_scale) do
-        Gosu.rotate(@player.orientation.y, @minimap_size, @minimap_size) do
-          Gosu.translate(-(@player.position.x * @map.size) + @minimap_size, -(@player.position.z * @map.size) + @minimap_size) do
+      Gosu.scale(@minimap_scale, @minimap_scale, @minimap_size / 2, @minimap_size / 2) do
+        Gosu.rotate(@player.orientation.y, @minimap_size / 2, @minimap_size / 2) do
+          Gosu.translate(-(@player.position.x * @map.size) + @minimap_size / 2, -(@player.position.z * @map.size) + @minimap_size / 2) do
             @map.draw
 
             # PLAYER
