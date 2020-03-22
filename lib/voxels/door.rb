@@ -3,9 +3,9 @@ class Door < Voxel
     @collidable = false
   end
 
-  def default_texture; Texture.get(:wall) end
-  def texture_up; Texture.get(:floor) end
-  def texture_down; Texture.get(:ceiling) end
+  def default_texture; Texture.get("brick_wall") end
+  def texture_up; Texture.get("rock_floor") end
+  def texture_down; Texture.get("office_ceiling") end
 
   def construct!
     build_face(:up, @x, @y)
